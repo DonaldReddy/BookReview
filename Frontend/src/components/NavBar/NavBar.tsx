@@ -5,28 +5,52 @@ import { authActions } from "../../redux/slices/authSlice";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 import { useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function NavBar() {
 	const location = useLocation();
 	const { isAuthenticated, user } = useAppSelector((state) => state.auth);
 	const dispatch = useAppDispatch();
 	const [openMenu, setOpenMenu] = useState(false);
+	const [showNavbar, setShowNavbar] = useState(true);
+    const lastScrollY = useRef(0);
+
 
 	const linkClass = (path: string) =>
-		`px-3  m-1 text-black/60 hover:scale-110 hover:text-black/100 transition-all duration-200 ${
-			location.pathname === path ? "text-black/100 underline" : ""
-		}`;
+        `px-3 py-1 rounded-md m-1 text-base font-medium text-black/60 dark:text-white/60 hover:scale-105 hover:text-black dark:hover:text-white transition-all duration-200 ${
+        location.pathname === path ? "text-black dark:text-white underline underline-offset-4" : ""
+    }`;
 
 	const handleLogout = () => {
 		setOpenMenu(false);
 		dispatch(authActions.logout());
 	};
 
+	useEffect(() => {
+	const handleScroll = () => {
+		if (typeof window !== "undefined") {
+			const currentScrollY = window.scrollY;
+			if (currentScrollY > lastScrollY.current && currentScrollY > 60) {
+				// Scrolling down
+				setShowNavbar(false);
+			} else {
+				// Scrolling up
+				setShowNavbar(true);
+			}
+			lastScrollY.current = currentScrollY;
+		}
+	};
+
+	window.addEventListener("scroll", handleScroll);
+	return () => window.removeEventListener("scroll", handleScroll);
+}, []);
+
 	return (
-		<div className="p-3 max-w-screen-2xl fixed top-0 left-0 right-0 z-10">
-			<div className="h-10 w-full flex justify-between items-center bg-white rounded-md border border-black/20 shadow-md">
+		<div className={`p-3 max-w-screen-2xl fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-blue-100/40 dark:bg-black/30 shadow-sm transform transition-transform duration-300 ${ showNavbar ? "translate-y-0" : "-translate-y-full"}`}>
+
+            <div className="max-w-screen-2xl mx-auto h-14 px-4 flex justify-between items-center transition-all duration-300">
 				<div className="w-1/5 px-3">
-					<Link to="/" className="text-black text-lg">
+					<Link to="/" className="text-black dark:text-gray-100 text-lg">
 						BookReview<span className="text-[12px]">.in</span>
 					</Link>
 				</div>
@@ -65,13 +89,13 @@ export default function NavBar() {
 								className={linkClass(`/app/profile/${user.id}`)}
 							>
 								<FaRegUserCircle
-									className=" text-black/60 hover:scale-105 hover:text-black/100 transition-all duration-200 cursor-pointer"
+									className=" text-black/60 dark:text-gray-100 hover:scale-105 hover:text-black/100 dark:hover:text-gray-100 transition-all duration-200 cursor-pointer"
 									size={25}
 								/>
 							</Link>
 
 							<RxExit
-								className="ml-2 text-black/60 hover:scale-105 hover:text-black/100 transition-all duration-200 cursor-pointer"
+								className="ml-2 text-black/60 dark:text-gray-100 hover:scale-105 hover:text-black/100 dark:hover:text-gray-100 transition-all duration-200 cursor-pointer"
 								size={25}
 								onClick={handleLogout}
 							/>
@@ -81,7 +105,7 @@ export default function NavBar() {
 				<div className="w-4/5 md:hidden flex items-center justify-end px-3">
 					<IoMenu size={30} onClick={() => setOpenMenu(!openMenu)} />{" "}
 					{openMenu && (
-						<div className="absolute top-10 right-0 w-2/4 bg-white shadow-lg rounded-md p-4 z-20">
+						<div className="absolute top-10 right-0 w-2/4 bg-gray-100 dark:bg-gray-800 text-black dark:text-white shadow-lg rounded-md p-4 z-20">
 							<div className="w-full flex gap-2 flex-col  ">
 								<Link
 									to="/"
@@ -141,7 +165,7 @@ export default function NavBar() {
 											onClick={() => setOpenMenu(false)}
 										>
 											<FaRegUserCircle
-												className=" text-black/60 hover:scale-105 hover:text-black/100 transition-all duration-200 cursor-pointer"
+												className=" text-black/60 dark:text-gray-100 hover:scale-105 hover:text-black/100 dark:hover:text-gray-100 transition-all duration-200 cursor-pointer"
 												size={25}
 											/>
 											Profile
@@ -151,7 +175,7 @@ export default function NavBar() {
 											onClick={handleLogout}
 										>
 											<RxExit
-												className="ml-2 text-black/60 hover:scale-105 hover:text-black/100 transition-all duration-200 cursor-pointer"
+												className="ml-2 text-black/60 dark:text-gray-100 hover:scale-105 hover:text-black/100 dark:hover:text-gray-100 transition-all duration-200 cursor-pointer"
 												size={25}
 											/>
 											Logout

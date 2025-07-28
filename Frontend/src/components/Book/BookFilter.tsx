@@ -36,9 +36,9 @@ export default function BookFilter() {
 	}, [search, sortBy, filter, page, limit]);
 
 	return (
-		<div className="hidden w-full md:flex items-center justify-between bg-white/80 p-2 rounded-lg shadow-md text-black ">
+		<div className="hidden w-full md:flex items-center justify-between bg-white/80 dark:bg-gray-800 p-2 rounded-lg shadow-md text-black dark:text-white">
 			<div className="flex items-center gap-2">
-				<div className="flex items-center border-black/20 border rounded-lg px-2">
+				<div className="flex items-center border-black/20 dark:border-white/20 border rounded-lg px-2">
 					<label className="text-lg font-semibold" htmlFor="search">
 						<IoIosSearch />
 					</label>
@@ -46,19 +46,19 @@ export default function BookFilter() {
 						type="text"
 						name="search"
 						placeholder="Search book title..."
-						className=" rounded-lg p-2 ml-2 outline-none"
+						className="bg-white dark:bg-gray-700 dark:text-white rounded-lg p-2 ml-2 outline-none"
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
 					/>
 				</div>
-				<div className="flex items-center border-black/20 border rounded-lg px-2">
+				<div className="flex items-center border-black/20 dark:border-white/20 border rounded-lg px-2">
 					<label className="text-lg font-semibold" htmlFor="sortby">
 						<FaSort />
 					</label>
 					<select
 						name="sortby"
 						defaultValue=""
-						className="rounded-lg p-2 ml-2 outline-none"
+						className="bg-white dark:bg-gray-700 dark:text-white rounded-lg p-2 ml-2 outline-none"
 						value={sortBy}
 						onChange={(e) => setSortBy(e.target.value)}
 					>
@@ -72,14 +72,14 @@ export default function BookFilter() {
 						<option value="rating">Rating</option>
 					</select>
 				</div>
-				<div className="flex items-center border-black/20 border rounded-lg px-2">
+				<div className="flex items-center border-black/20 dark:border-white/20 border rounded-lg px-2">
 					<label className="text-lg font-semibold" htmlFor="filter">
 						<FaFilter />
 					</label>
 					<select
 						name="sortby"
 						defaultValue=""
-						className="rounded-lg p-2 ml-2 outline-none"
+						className="bg-white dark:bg-gray-700 dark:text-white rounded-lg p-2 ml-2 outline-none"
 						value={filter}
 						onChange={(e) => setFilter(e.target.value)}
 					>
@@ -93,7 +93,7 @@ export default function BookFilter() {
 						<option value="rating=1">rating &gt; 1</option>
 					</select>
 				</div>
-				<div className="flex items-center border-black/20 border rounded-lg px-2">
+				<div className="flex items-center border-black/20 dark:border-white/20 border rounded-lg px-2">
 					<label className="text-sm " htmlFor="limit">
 						Items per page :
 					</label>
@@ -106,7 +106,7 @@ export default function BookFilter() {
 						max={20}
 						defaultValue={10}
 						placeholder="Limit results..."
-						className=" rounded-lg p-2  outline-none"
+						className="bg-white dark:bg-gray-700 dark:text-white rounded-lg p-2  outline-none"
 						value={limit}
 						onChange={(e) => {
 							if (e.target.value.length > 0) {
@@ -116,7 +116,7 @@ export default function BookFilter() {
 					/>
 				</div>
 				<button
-					className="text-black py-2 px-3 rounded-xl flex items-center gap-2 hover:bg-black/100 hover:text-white transition-all duration-200 cursor-pointer border border-black/40"
+					className="text-black dark:text-white py-2 px-3 rounded-xl flex items-center gap-2 hover:bg-black/100 dark:hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer border border-black/40"
 					onClick={() => {
 						setSearch("");
 						setSortBy("");
@@ -139,14 +139,14 @@ export default function BookFilter() {
 				)}
 				{role == "ADMIN" && (
 					<button
-						className=" text-black py-2 px-3 rounded-xl flex items-center gap-2 hover:bg-black/100 hover:text-white transition-all duration-200 cursor-pointer border border-black/40"
+						className=" text-black dark:text-white py-2 px-3 rounded-xl flex items-center gap-2 hover:bg-black/100 dark:hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer border border-black/40"
 						onClick={() => setShowAddNewBook(true)}
 					>
 						Add new book <FaPlus />
 					</button>
 				)}
 				{role == "USER" && (
-					<button className=" text-black py-2 px-3 rounded-xl flex items-center gap-2 hover:bg-black/100 hover:text-white transition-all duration-200 cursor-pointer border border-black/40">
+					<button className=" text-black dark:text-white py-2 px-3 rounded-xl flex items-center gap-2 hover:bg-black/100 dark:hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer border border-black/40">
 						Saved books <FaBookmark />
 					</button>
 				)}

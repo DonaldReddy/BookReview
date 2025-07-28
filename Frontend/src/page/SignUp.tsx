@@ -5,6 +5,7 @@ import { authActions } from "../redux/slices/authSlice";
 import React, { useEffect } from "react";
 import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
 import Loader from "../components/Loader";
+import { toast } from "react-toastify";
 
 interface ErrorState {
 	email: string;
@@ -91,6 +92,7 @@ export default function SignUp() {
 		e.preventDefault();
 		
 		if (!validateForm()) {
+			toast.error("Please fix the form errors.");
 			return;
 		}
 		
@@ -100,6 +102,8 @@ export default function SignUp() {
 			console.log(userInfo);
 			const response = await api.post("/api/v1/auth/sign-up", userInfo);
 			dispatch(authActions.login(response.data.user));
+			toast.success("Account created successfully!");
+			setTimeout(() => router("/"), 1000);
 			router("/");
 		} catch (error: any) {
 			console.error("Sign up error:", error);
@@ -118,6 +122,7 @@ export default function SignUp() {
 					password: "",
 					name: "Something went wrong. Please try again.",
 				});
+				toast.error("Something went wrong. Please try again.");
 			}
 		} finally {
 			setLoading(false);
@@ -129,32 +134,33 @@ export default function SignUp() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 py-8">
+		<div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8">
 			<div className="w-full max-w-md">
-				<div className="bg-white shadow-2xl rounded-2xl p-8 space-y-8">
+				<div className="bg-white dark:bg-slate-800 shadow-2xl rounded-2xl p-8 space-y-8">
 					{/* Header */}
 					<div className="text-center space-y-2">
-						<h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
-						<p className="text-gray-600">Join us and get started today</p>
+						<h1 className="text-3xl font-bold text-gray-900 dark:text-white">Create Account</h1>
+						<p className="text-gray-600 dark:text-gray-300">Join us and get started today</p>
 					</div>
 
 					{/* Form */}
 					<form onSubmit={handleSubmit} className="space-y-6">
 						{/* Name Field */}
 						<div className="space-y-2">
-							<label htmlFor="name" className="block text-sm font-semibold text-gray-700">
+							<label htmlFor="name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
 								Full Name
 							</label>
 							<div className="relative">
 								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-									<User className="h-5 w-5 text-gray-400" />
+									<User className="h-5 w-5 text-gray-400 dark:text-gray-300" />
 								</div>
 								<input
 									id="name"
 									type="text"
 									placeholder="Enter your full name"
 									name="name"
-									className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 focus:bg-white"
+									className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
+
 									value={userInfo.name}
 									onChange={handleInputChange}
 									required
@@ -162,7 +168,7 @@ export default function SignUp() {
 								/>
 							</div>
 							{error.name && (
-								<p className="text-red-500 text-sm font-medium flex items-center gap-1">
+								<p className="text-red-500 dark:text-red-400 text-sm font-medium flex items-center gap-1">
 									{error.name}
 								</p>
 							)}
@@ -170,19 +176,19 @@ export default function SignUp() {
 
 						{/* Email Field */}
 						<div className="space-y-2">
-							<label htmlFor="email" className="block text-sm font-semibold text-gray-700">
+							<label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
 								Email Address
 							</label>
 							<div className="relative">
 								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-									<Mail className="h-5 w-5 text-gray-400" />
+									<Mail className="h-5 w-5 text-gray-400 dark:text-gray-300" />
 								</div>
 								<input
 									id="email"
 									type="email"
 									placeholder="Enter your email"
 									name="email"
-									className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 focus:bg-white"
+									className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
 									value={userInfo.email}
 									onChange={handleInputChange}
 									required
@@ -190,7 +196,7 @@ export default function SignUp() {
 								/>
 							</div>
 							{error.email && (
-								<p className="text-red-500 text-sm font-medium flex items-center gap-1">
+								<p className="text-red-500 dark:text-red-400 text-sm font-medium flex items-center gap-1">
 									{error.email}
 								</p>
 							)}
@@ -198,19 +204,19 @@ export default function SignUp() {
 
 						{/* Password Field */}
 						<div className="space-y-2">
-							<label htmlFor="password" className="block text-sm font-semibold text-gray-700">
+							<label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
 								Password
 							</label>
 							<div className="relative">
 								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-									<Lock className="h-5 w-5 text-gray-400" />
+									<Lock className="h-5 w-5 text-gray-400 dark:text-gray-300" />
 								</div>
 								<input
 									id="password"
 									type={showPassword ? "text" : "password"}
 									placeholder="Create a strong password"
 									name="password"
-									className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 focus:bg-white"
+									className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
 									value={userInfo.password}
 									onChange={handleInputChange}
 									required
@@ -220,18 +226,18 @@ export default function SignUp() {
 									type="button"
 									onClick={togglePasswordVisibility}
 									disabled={loading}
-									className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 rounded-r-lg transition-colors duration-200 min-w-[44px] min-h-[44px] justify-center disabled:cursor-not-allowed disabled:hover:bg-transparent"
+									className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 dark:hover:bg-gray-300 rounded-r-lg transition-colors duration-200 min-w-[44px] min-h-[44px] justify-center disabled:cursor-not-allowed disabled:hover:bg-transparent"
 									aria-label={showPassword ? "Hide password" : "Show password"}
 								>
 									{showPassword ? (
-										<EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+										<EyeOff className="h-5 w-5 text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 " />
 									) : (
-										<Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+										<Eye className="h-5 w-5 text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400" />
 									)}
 								</button>
 							</div>
 							{error.password && (
-								<p className="text-red-500 text-sm font-medium leading-relaxed">
+								<p className="text-red-500 dark:text-red-400 text-sm font-medium flex items-center gap-1">
 									{error.password}
 								</p>
 							)}
@@ -241,7 +247,7 @@ export default function SignUp() {
 						<button
 							type="submit"
 							disabled={loading}
-							className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+							className="w-full bg-gradient-to-r from-blue-600 to-blue-700 dark:to-blue-500 hover:from-blue-700 hover:to-blue-800 dark:hover:to-blue-600 disabled:from-gray-400 disabled:to-gray-500 dark:disabled:to-gray-300 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
 						>
 							{loading ? (
 								<>
@@ -257,12 +263,12 @@ export default function SignUp() {
 					</form>
 
 					{/* Footer */}
-					<div className="text-center pt-4 border-t border-gray-100">
-						<p className="text-gray-600">
+					<div className="text-center pt-4 border-t border-gray-100 dark:border-gray-600">
+						<p className=" text-gray-600 dark:text-gray-100">
 							Already have an account?{" "}
 							<Link 
 								to="/sign-in" 
-								className="font-semibold text-blue-600 hover:text-blue-800 transition-colors duration-200"
+								className="font-semibold text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200"
 							>
 								Sign In
 							</Link>

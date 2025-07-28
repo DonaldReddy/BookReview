@@ -11,13 +11,13 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-	isAuthenticated: false,
-	user: {
-		id: "",
-		name: "",
-		email: "",
-		role: "USER",
-	},
+    isAuthenticated: false,
+    user: {
+        id: "",
+        name: "",
+        email: "",
+        role: "USER",
+    },
 };
 
 const authSlice = createSlice({

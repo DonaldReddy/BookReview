@@ -21,7 +21,7 @@ export default function FeaturedBooks() {
 	if (!featuredBooks && isLoading) {
 		return (
 			<div className="w-full flex flex-col items-center">
-				<h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-500 to-10% to-pink-400 bg-clip-text text-transparent">
+				<h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-500 dark:from-[#a5b4fc] to-10% to-pink-400 dark:to-yellow-100/80 bg-clip-text text-transparent">
 					Featured Books
 				</h2>
 				<div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-4">
@@ -37,7 +37,7 @@ export default function FeaturedBooks() {
 
 	return (
 		<div className="w-full flex flex-col items-center">
-			<h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-500 to-10% to-pink-400 bg-clip-text text-transparent">
+			<h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-500 dark:from-[#a5b4fc] to-10% to-pink-400 dark:to-[#fbcfe8] bg-clip-text text-transparent">
 				Featured Books
 			</h2>
 			<div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-4">
@@ -60,7 +60,7 @@ export default function FeaturedBooks() {
 				) : (
 					!isLoading && (
 						<div className="col-span-full text-center py-8">
-							<p className="text-gray-500">No featured books available</p>
+							<p className="text-gray-500 dark:text-gray-400">No featured books available</p>
 						</div>
 					)
 				)}

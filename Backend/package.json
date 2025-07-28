@@ -21,7 +21,8 @@
 		"dotenv": "^17.2.0",
 		"express": "^5.1.0",
 		"jsonwebtoken": "^9.0.2",
-		"nodemon": "^3.1.10"
+		"nodemon": "^3.1.10",
+		"react-toastify": "^11.0.5"
 	},
 	"devDependencies": {
 		"prisma": "^6.6.0"
