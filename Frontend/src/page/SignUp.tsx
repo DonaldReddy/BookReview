@@ -1,3 +1,4 @@
+import { GoogleLogin } from "@react-oauth/google";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import { useAppDispatch, useAppSelector } from "../redux/store";
@@ -5,6 +6,7 @@ import { authActions } from "../redux/slices/authSlice";
 import React, { useEffect } from "react";
 import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
 import Loader from "../components/Loader";
+import { toast } from "react-toastify";
 
 interface ErrorState {
   email: string;
@@ -62,7 +64,9 @@ export default function SignUp() {
     if (!userInfo.password) {
       currentError.password = "Please create a password";
     } else if (
-      !/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+={}\[\]:;"'<>,.?~`-]{8,}$/.test(userInfo.password)
+      !/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+={}\[\]:;"'<>,.?~`-]{8,}$/.test(
+        userInfo.password
+      )
     ) {
       currentError.password =
         "Password must be at least 8 characters with at least one letter and one number.";
@@ -92,7 +96,9 @@ export default function SignUp() {
     } catch (error: any) {
       console.error("Sign up error:", error);
       setError({
-        email: error.response?.data?.message?.includes("email") ? error.response.data.message : "",
+        email: error.response?.data?.message?.includes("email")
+          ? error.response.data.message
+          : "",
         password: error.response?.data?.message?.includes("password")
           ? error.response.data.message
           : "",
@@ -101,6 +107,9 @@ export default function SignUp() {
           : "Something went wrong. Please try again.",
         confirmPassword: "",
       });
+      toast.error(
+        error.response?.data?.message || "Sign up failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -111,8 +120,12 @@ export default function SignUp() {
       <div className="w-full max-w-md">
         <div className="bg-white shadow-2xl rounded-2xl p-8 space-y-8 border border-violet-200">
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold text-violet-700">Create Your Account</h1>
-            <p className="text-gray-600">Begin your reading journey today with us.</p>
+            <h1 className="text-3xl font-bold text-violet-700">
+              Create Your Account
+            </h1>
+            <p className="text-gray-600">
+              Begin your reading journey today with us.
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -122,7 +135,9 @@ export default function SignUp() {
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <User className="h-5 w-5 text-gray-400" />
+                </span>
                 </span>
                 <input
                   id="name"
@@ -136,7 +151,9 @@ export default function SignUp() {
                   required
                 />
               </div>
-              {error.name && <p className="text-sm text-red-500">{error.name}</p>}
+              {error.name && (
+                <p className="text-sm text-red-500">{error.name}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -145,7 +162,9 @@ export default function SignUp() {
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
+                </span>
                 </span>
                 <input
                   id="email"
@@ -159,7 +178,9 @@ export default function SignUp() {
                   required
                 />
               </div>
-              {error.email && <p className="text-sm text-red-500">{error.email}</p>}
+              {error.email && (
+                <p className="text-sm text-red-500">{error.email}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -245,6 +266,39 @@ export default function SignUp() {
             </div>
           </form>
 
+          {/* Divider */}
+          <div className="flex items-center justify-center gap-4 text-sm text-gray-400 mt-4">
+            <div className="h-px bg-gray-300 flex-1" />
+            <span>or continue with</span>
+            <div className="h-px bg-gray-300 flex-1" />
+          </div>
+
+          {/* Google Sign Up/Login */}
+          <div className="flex items-center justify-center mt-4">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const res = await api.post("/api/v1/auth/google-auth", {
+                    token: credentialResponse.credential,
+                  });
+
+                  dispatch(authActions.login(res.data.user));
+                  if (res.data.user.role === "ADMIN") {
+                    router("/admin");
+                  } else {
+                    router("/");
+                  }
+                } catch (err) {
+                  console.error("Google SignUp error", err);
+                }
+              }}
+              onError={() => {
+                console.error("Google Login Failed");
+              }}
+            />
+          </div>
+
+          {/* Footer */}
           <div className="text-center pt-4 border-t border-gray-100">
             <p className="text-gray-600">
               Already have an account?{" "}

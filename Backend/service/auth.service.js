@@ -11,7 +11,6 @@ class AuthService {
 		}
 
 		const isPasswordValid = await bcrypt.compare(password, user.password);
-
 		if (!isPasswordValid) {
 			throw new Error("Invalid password");
 		}
@@ -40,6 +39,32 @@ class AuthService {
 
 		if (!newUser) {
 			throw new Error("User creation failed");
+		}
+
+		return {
+			id: newUser.id,
+			name: newUser.name,
+			email: newUser.email,
+			role: newUser.role,
+		};
+	};
+
+	// 🆕 Google Auth Helpers
+	findByEmail = async (email) => {
+		return await userRepository.findUserByEmail(email);
+	};
+
+	createGoogleUser = async ({ name, email, googleId, picture }) => {
+		const newUser = await userRepository.createNewUser({
+			name,
+			email,
+			googleId,
+			profileImage: picture,
+			role: "USER",
+		});
+
+		if (!newUser) {
+			throw new Error("Google user creation failed");
 		}
 
 		return {

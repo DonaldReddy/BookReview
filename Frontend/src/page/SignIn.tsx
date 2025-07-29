@@ -1,3 +1,4 @@
+import { GoogleLogin } from "@react-oauth/google";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import { useAppDispatch, useAppSelector } from "../redux/store";
@@ -5,6 +6,7 @@ import { authActions } from "../redux/slices/authSlice";
 import React, { useEffect } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import Loader from "../components/Loader";
+import { toast } from "react-toastify";
 
 export default function SignIn() {
 	const [userInfo, setUserInfo] = React.useState({
@@ -42,9 +44,12 @@ export default function SignIn() {
 			const response = await api.post("/api/v1/auth/sign-in", userInfo);
 			dispatch(authActions.login(response.data.user));
 			router("/");
-		} catch (error) {
+		} catch (error: any) {
 			console.error("Login error:", error);
-			// Optional: add toast here
+			toast.error(
+				error.response?.data?.message ||
+					"Login failed: wrong email or password"
+			);
 		} finally {
 			setLoading(false);
 		}
@@ -162,7 +167,32 @@ export default function SignIn() {
 						</button>
 					</form>
 
-					{/* Footer */}
+              {/* Google Sign Up/Login */}
+          <div className="flex items-center justify-center mt-4">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const res = await api.post("/api/v1/auth/google-auth", {
+                    token: credentialResponse.credential,
+                  });
+
+                  dispatch(authActions.login(res.data.user));
+                  if (res.data.user.role === "ADMIN") {
+                    router("/admin");
+                  } else {
+                    router("/");
+                  }
+                } catch (err) {
+                  console.error("Google SignUp error", err);
+                }
+              }}
+              onError={() => {
+                console.error("Google Login Failed");
+              }}
+            />
+          </div>
+
+          {/* Footer */}
 					<div className="text-center pt-4 border-t border-gray-100">
 						<p className="text-gray-600">
 							Don't have an account?{" "}

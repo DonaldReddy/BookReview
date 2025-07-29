@@ -16,6 +16,8 @@ import FindBooks from "./page/FindBooks";
 import Book from "./page/Book";
 import Profile from "./page/Profile";
 import AboutUs from "./page/AboutUs"; // ✅ Import AboutUs
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -46,6 +48,7 @@ function App() {
 	return (
 		<ReduxProvider>
 			<RouterProvider router={router} />
+			<ToastContainer />
 		</ReduxProvider>
 	);
 }
