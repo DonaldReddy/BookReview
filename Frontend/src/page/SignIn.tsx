@@ -190,6 +190,11 @@ export default function SignIn() {
 							)}
 						</button>
 					</form>
+					<div className="flex items-center justify-center gap-4 text-sm text-gray-400 mt-4">
+                        <div className="h-px bg-gray-300 flex-1" />
+                            <span>or continue with</span>
+                        <div className="h-px bg-gray-300 flex-1" />
+                    </div>
 
               {/* Google Sign Up/Login */}
           <div className="flex items-center justify-center mt-4">

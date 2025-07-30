@@ -228,36 +228,6 @@ export default function SignUp() {
 								</p>
 							)}
 						</div>
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
-                Password
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </span>
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={userInfo.password}
-                  onChange={handleInputChange}
-                  placeholder="Create a secure password"
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 focus:ring-4 focus:ring-violet-500 focus:border-violet-500 focus:ring-offset-1"
-                  disabled={loading}
-                  required
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 inset-y-0 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={loading}
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
-                </button>
-              </div>
-              {error.password && <p className="text-sm text-red-500">{error.password}</p>}
-            </div>
 
             <div className="space-y-2">
               <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700">
@@ -294,7 +264,7 @@ export default function SignUp() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 shadow-lg flex justify-center items-center gap-2"
+                className="w-full bg-blue-500 hover:bg-blue-600/70 text-gray-100 font-semibold py-3 px-4 rounded-lg transition duration-300 shadow-lg flex justify-center items-center gap-2"
               >
                 {loading ? (
                   <>
@@ -305,7 +275,7 @@ export default function SignUp() {
                   "Create Account"
                 )}
               </button>
-              <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 w-64 bg-green-100 text-green-800 text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition-all duration-300 px-3 py-2 pointer-events-none group-hover:pointer-events-auto z-10">
+              <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 w-64 bg-blue-100 text-blue-800 text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition-all duration-300 px-3 py-2 pointer-events-none group-hover:pointer-events-auto z-10">
                 Please double-check your inputs before creating the account.
               </div>
             </div>
@@ -349,7 +319,7 @@ export default function SignUp() {
 							Already have an account?{" "}
 							<Link 
 								to="/sign-in" 
-								className="font-semibold text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200"
+								className="font-semibold text-blue-600 dark:text-blue-500 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200"
 							>
 								Sign In
 							</Link>
