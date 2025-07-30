@@ -1,3 +1,4 @@
+import { GoogleLogin } from "@react-oauth/google";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import { useAppDispatch, useAppSelector } from "../redux/store";
@@ -40,7 +41,6 @@ export default function SignIn() {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setLoading(true);
-		
 		try {
 			const response = await api.post("/api/v1/auth/sign-in", userInfo);
 			dispatch(authActions.login(response.data.user));
@@ -151,7 +151,7 @@ export default function SignIn() {
 									type="button"
 									onClick={togglePasswordVisibility}
 									disabled={loading}
-									className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 rounded-r-lg transition-colors duration-200 min-w-[44px] min-h-[44px] justify-center disabled:cursor-not-allowed disabled:hover:bg-transparent"
+									className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 rounded-r-lg transition-colors duration-200 min-w-[44px] min-h-[44px] justify-center disabled:cursor-not-allowed"
 									aria-label={showPassword ? "Hide password" : "Show password"}
 								>
 									{showPassword ? (
@@ -165,7 +165,7 @@ export default function SignIn() {
 
 						{/* Forgot Password */}
 						<div className="flex justify-end">
-							<button 
+							<button
 								type="button"
 								disabled={loading}
 								className="text-sm font-medium text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200 disabled:text-gray-400 disabled:cursor-not-allowed"
@@ -182,18 +182,41 @@ export default function SignIn() {
 						>
 							{loading ? (
 								<>
-									<div className="w-5 h-5">
-										<Loader size={20} />
-									</div>
-									<span>Signing In...</span>
+									<Loader size={20} />
+									<span>Logging in...</span>
 								</>
 							) : (
-								"Sign In"
+								"Login"
 							)}
 						</button>
 					</form>
 
-					{/* Footer */}
+              {/* Google Sign Up/Login */}
+          <div className="flex items-center justify-center mt-4">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const res = await api.post("/api/v1/auth/google-auth", {
+                    token: credentialResponse.credential,
+                  });
+
+                  dispatch(authActions.login(res.data.user));
+                  if (res.data.user.role === "ADMIN") {
+                    router("/admin");
+                  } else {
+                    router("/");
+                  }
+                } catch (err) {
+                  console.error("Google SignUp error", err);
+                }
+              }}
+              onError={() => {
+                console.error("Google Login Failed");
+              }}
+            />
+          </div>
+
+          {/* Footer */}
 					<div className="text-center pt-4 border-t border-gray-100">
 						<p className="text-gray-600 dark:text-gray-400">
 							Don't have an account?{" "}
@@ -201,7 +224,7 @@ export default function SignIn() {
 								to="/sign-up" 
 								className="font-semibold text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200"
 							>
-								Sign Up
+								Register
 							</Link>
 						</p>
 					</div>

@@ -15,6 +15,9 @@ import AdminHome from "./page/Admin/AdminHome";
 import FindBooks from "./page/FindBooks";
 import Book from "./page/Book";
 import Profile from "./page/Profile";
+import AboutUs from "./page/AboutUs"; // ✅ Import AboutUs
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { useAppSelector } from "./redux/store";
 
@@ -25,6 +28,8 @@ const router = createBrowserRouter(
 
 			<Route path="sign-in" element={<SignIn />} />
 			<Route path="sign-up" element={<SignUp />} />
+
+			<Route path="about" element={<AboutUs />} /> {/* ✅ About Us route */}
 
 			<Route path="app" element={<ProtectedRoute access="USER" />}>
 				<Route path="books/:id" element={<Book />} />
@@ -37,8 +42,8 @@ const router = createBrowserRouter(
 			</Route>
 
 			<Route path="*" element={<Navigate to="/" />} />
-		</Route>,
-	),
+		</Route>
+	)
 );
 
 function InnerApp() {
@@ -55,6 +60,7 @@ function App() {
 	return (
 		<ReduxProvider>
 			<InnerApp />
+			<ToastContainer />
 		</ReduxProvider>
 	);
 }

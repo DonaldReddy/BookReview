@@ -166,3 +166,9 @@ We're excited to welcome contributors of all experience levels — whether you'r
 **Project by [DonaldReddy](https://github.com/DonaldReddy)** 💻
 
 ---
+## ✨ Contributors
+**Thank you to these amazing people.**
+
+<a href="https://github.com/DonaldReddy/BookReview/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=DonaldReddy/BookReview" />
+</a>

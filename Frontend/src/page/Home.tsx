@@ -16,7 +16,7 @@ export default function Home() {
 						Explore the latest reviews and insights powered by AI.
 					</p>
 					<p className="text-md text-center md:text-left">
-						Join us in discovering your next favorite book!
+						Join us in discovering your next favourite book!
 					</p>
 				</div>
 			</div>

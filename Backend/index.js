@@ -8,6 +8,7 @@ import { userRouter } from "./routes/user.route.js";
 import { bookRouter } from "./routes/book.route.js";
 import { reviewRouter } from "./routes/review.route.js";
 
+dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 console.log(process.env.FRONTEND_URL);
