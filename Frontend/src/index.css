@@ -1,8 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Pacifico:wght@100..400&display=swap");
+
 
 :root {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Pacifico',cursive;
     --primary-color: #000000;
     --secondary-color: #b1b0b3;
     --tertiary-color: #433bff;
@@ -15,6 +17,11 @@
     -moz-animation: animation 3s ease infinite;
     animation: animation 3s ease infinite;
 }
+
+.font-pacifico {
+  font-family: "Pacifico",cursive;
+}
+
 
 @keyframes animation {
 
