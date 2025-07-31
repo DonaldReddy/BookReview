@@ -18,6 +18,8 @@ import Profile from "./page/Profile";
 import AboutUs from "./page/AboutUs"; // ✅ Import AboutUs
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useEffect } from "react";
+import { useAppSelector } from "./redux/store";
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -44,10 +46,20 @@ const router = createBrowserRouter(
 	)
 );
 
+function InnerApp() {
+	const theme = useAppSelector((state) => state.general.theme);
+
+	useEffect(() => {
+		document.documentElement.classList.toggle("dark", theme === "dark");
+	}, [theme]);
+
+	return <RouterProvider router={router} />;
+}
+
 function App() {
 	return (
 		<ReduxProvider>
-			<RouterProvider router={router} />
+			<InnerApp />
 			<ToastContainer />
 		</ReduxProvider>
 	);

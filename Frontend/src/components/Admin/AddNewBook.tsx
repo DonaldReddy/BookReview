@@ -83,8 +83,8 @@ export default function AddNewBook({
 	};
 
 	return (
-		<div className="fixed top-0 left-0 h-screen w-screen bg-black/40 flex justify-center items-center">
-			<div className="bg-white w-3/4 h-4/5 rounded-lg shadow-md flex flex-col items-center  gap-4 p-4">
+		<div className="fixed top-0 left-0 h-screen w-screen bg-black/40 dark:bg-white/50 flex justify-center items-center">
+			<div className="bg-white dark:bg-black w-3/4 h-4/5 rounded-lg shadow-md flex flex-col items-center  gap-4 p-4">
 				<div className="flex justify-between items-center w-full">
 					<h2 className="text-2xl underline underline-offset-5">
 						Add New Book
@@ -101,7 +101,7 @@ export default function AddNewBook({
 						<div className="flex flex-col gap-2">
 							<label htmlFor="title">Title</label>
 							<input
-								className="outline-none border border-black/20 focus:border-black/40  rounded-md p-1"
+								className="outline-none border border-black/20 dark:border-white/30 focus:border-black/40 dark:focus:border-white/50 rounded-md p-1"
 								type="text"
 								name="title"
 								id="title"
@@ -114,7 +114,7 @@ export default function AddNewBook({
 						<div className="flex flex-col gap-2">
 							<label htmlFor="author">Author</label>
 							<input
-								className="outline-none border border-black/20 focus:border-black/40  rounded-md p-1"
+								className="outline-none border border-black/20 dark:border-white/30 focus:border-black/40 dark:focus:border-white/50 rounded-md p-1"
 								type="text"
 								name="author"
 								id="author"
@@ -127,7 +127,7 @@ export default function AddNewBook({
 						<div className="flex flex-col gap-2">
 							<label htmlFor="description">Description</label>
 							<textarea
-								className="resize-none outline-none border border-black/20 focus:border-black/40  rounded-md p-1"
+								className="resize-none outline-none border border-black/20 dark:border-white/30 focus:border-black/40 dark:focus:border-white/50 rounded-md p-1"
 								name="description"
 								id="description"
 								placeholder="Enter book description..."
@@ -141,7 +141,7 @@ export default function AddNewBook({
 						<div className="flex flex-col gap-2">
 							<label htmlFor="genre">Genre</label>
 							<input
-								className="outline-none border border-black/20 focus:border-black/40  rounded-md p-1"
+								className="outline-none border border-black/20 dark:border-white/30 focus:border-black/40 dark:focus:border-white/50 rounded-md p-1"
 								type="text"
 								name="genre"
 								placeholder="Enter genre separated by commas... action,adventure,etc."
@@ -156,7 +156,7 @@ export default function AddNewBook({
 						<div className="flex flex-col gap-2">
 							<label htmlFor="coverImage">Cover Image</label>
 							<input
-								className="outline-none border border-black/20 focus:border-black/40  rounded-md p-1"
+								className="outline-none border border-black/20 dark:border-white/30 focus:border-black/40 dark:focus:border-white/50 rounded-md p-1"
 								type="file"
 								name="coverImage"
 								accept="image/*"
@@ -184,7 +184,7 @@ export default function AddNewBook({
 						<div className="flex flex-col gap-2">
 							<label htmlFor="featured">Featured</label>
 							<select
-								className="outline-none border border-black/20 focus:border-black/40  rounded-md p-1"
+								className="outline-none border border-black/20 dark:border-white/30 focus:border-black/40 dark:focus:border-white/50 rounded-md p-1"
 								name="featured"
 								id="featured"
 								onChange={handleInputChange}
@@ -195,7 +195,7 @@ export default function AddNewBook({
 							</select>
 						</div>
 						<div className="flex flex-col justify-center items-center w-full">
-							<button className="bg-black/80 text-white rounded-md p-2 cursor-pointer hover:bg-black/100 transition-all duration-200 flex justify-center w-full max-w-[250px] ">
+							<button className="bg-black/80 dark:bg-white text-white dark:text-black rounded-md p-2 cursor-pointer hover:bg-black/100 dark:hover:bg-gray-200 transition-all duration-200 flex justify-center w-full max-w-[250px] ">
 								{loading ? <Loader size={25} /> : "Add Book"}
 							</button>
 						</div>

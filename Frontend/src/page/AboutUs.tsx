@@ -10,7 +10,7 @@ const fadeInUp = {
 
 const AboutUs = () => {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-violet-200 via-yellow-50 to-yellow-100/60 py-16 px-6">
+    <div className="min-h-screen w-full bg-gradient-to-br from-violet-200 dark:from-[#4338ca]/90 to-yellow-100/60 dark:to-[#fde68a]/70 rounded-2xl py-16 px-6">
       {/* Header Section */}
       <motion.div
         className="text-center mb-16"
@@ -19,8 +19,8 @@ const AboutUs = () => {
         viewport={{ once: true }}
         variants={fadeInUp}
       >
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">About</h1>
-        <h2 className="text-2xl md:text-3xl font-semibold text-purple-700 mb-6">
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">About</h1>
+        <h2 className="text-2xl md:text-3xl font-semibold text-blue-900/70 dark:text-[#a5b4fc] p-700 mb-6">
           <Typewriter
             words={["BookReview.in"]}
             loop={1}
@@ -32,7 +32,7 @@ const AboutUs = () => {
           />
         </h2>
 
-        <p className="text-gray-700 text-lg max-w-2xl mx-auto leading-relaxed">
+        <p className="text-gray-500 dark:text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
           Welcome to BookReview.in — a collaborative open-source platform for book lovers! Whether you're a curious
           reader, techie, or open-source contributor, we empower you to explore books, share reviews, and grow with a
           passionate community.
@@ -42,13 +42,13 @@ const AboutUs = () => {
       {/* Cards Section */}
       <div className="grid md:grid-cols-2 gap-10 mb-20">
         <motion.div
-          className="rounded-2xl bg-white p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-200"
+          className="rounded-2xl bg-white dark:bg-gray-300 p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-200 "
           variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
         >
-          <h3 className="text-2xl font-semibold text-purple-800 mb-3 flex items-center gap-2">
+          <h3 className="text-2xl font-semibold text-blue-900 hover:scale-105 transition-transform duration-300 mb-3 flex items-center gap-2">
             🌐 Our Motto
           </h3>
           <p className="text-gray-600 text-base leading-relaxed">
@@ -58,14 +58,14 @@ const AboutUs = () => {
         </motion.div>
 
         <motion.div
-          className="rounded-2xl bg-white p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-200"
+          className="rounded-2xl bg-white dark:bg-gray-300 p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-200"
           variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
         >
-          <h3 className="text-2xl font-semibold text-purple-800 mb-3 flex items-center gap-2">
+          <h3 className="text-2xl font-semibold text-blue-900 hover:scale-105 transition-transform duration-300 mb-3 flex items-center gap-2">
             🔧 Open Source
           </h3>
           <p className="text-gray-600 text-base leading-relaxed mb-4">
@@ -85,13 +85,13 @@ const AboutUs = () => {
 
       {/* Contributors Section */}
       <motion.div
-        className="text-center bg-white rounded-2xl shadow-md p-10 border border-gray-200 hover:shadow-xl transition-shadow duration-300"
+        className="text-center bg-white dark:bg-gray-300 rounded-2xl shadow-md p-10 border border-gray-200 dark:border-gray-500 hover:shadow-xl transition-shadow duration-300"
         variants={fadeInUp}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <h2 className="text-3xl font-bold text-purple-800 mb-4 hover:scale-105 transition-transform duration-300">
+        <h2 className="text-3xl font-bold text-blue-900 mb-4 hover:scale-105 transition-transform duration-300">
           👥 Contributors
         </h2>
         <p className="text-gray-600 text-base mb-6 leading-relaxed max-w-xl mx-auto">
