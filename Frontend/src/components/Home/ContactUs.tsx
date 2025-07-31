@@ -45,7 +45,7 @@ function ContactUs() {
           <div>
             <label className="block text-lg font-medium">Message</label>
             <textarea
-              rows="4"
+              rows={4}
               placeholder="Type your message here..."
               className="w-full border-2 border-gray-300 rounded-md p-2 mt-1 resize-none focus:outline-none focus:border-purple-600"
             ></textarea>
