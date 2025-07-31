@@ -22,7 +22,11 @@ function CategoryBooks() {
       <div className="flex flex-col px-4 sm:px-6 md:px-8 lg:px-16 xl:px-24">
         {/* Search Box */}
         <div className="flex flex-col justify-center items-center w-full space-y-5 bg-pink-200 rounded-2xl p-6 mb-6">
+          <label htmlFor="search-category" className="sr-only">
+            Search Categories
+          </label>
           <input
+            id="search-category"
             className="border-2 w-full max-w-md h-10 p-2 hover:border-fuchsia-700 hover:text-pink-700 border-gray-400 rounded-md transition"
             type="search"
             name="search book"
