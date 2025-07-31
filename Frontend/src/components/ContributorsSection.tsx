@@ -19,7 +19,6 @@ const ContributorsSection: React.FC = () => {
     const fetchContributors = async () => {
       try {
         const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contributors`);
-        console.log(response)
         const data: Contributor[] = await response.json();
 
         if (!Array.isArray(data)) {
