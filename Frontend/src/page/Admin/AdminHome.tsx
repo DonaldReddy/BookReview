@@ -6,6 +6,7 @@ import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 import BookSkeleton from "../../components/Book/BookSkeleton";
 import { adminBookActions } from "../../redux/slices/adminBookSlice";
 import BookFilter from "../../components/Book/BookFilter";
+import { toast } from "react-toastify";
 
 export default function AdminHome() {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -17,11 +18,16 @@ export default function AdminHome() {
 	const [page, setPage] = useState(searchParams.get("page") || 1);
 
 	useEffect(() => {
-		const timeOut = setTimeout(() => {
-			dispatch(adminBookActions.fetchBooks());
-		}, 500);
-		return () => clearTimeout(timeOut);
-	}, [searchParams]);
+	const timeOut = setTimeout(() => {
+		dispatch(adminBookActions.fetchBooks())
+			.unwrap()
+			.catch(() => {
+				toast.error("Failed to fetch books. Please try again.");
+			});
+	}, 500);
+	return () => clearTimeout(timeOut);
+}, [searchParams]);
+
 
 	useEffect(() => {
 		setSearchParams({ page: page.toString() });
@@ -65,7 +71,7 @@ export default function AdminHome() {
 			<div className="flex items-center justify-center gap-4 mt-5 pt-5">
 				{previousPage && (
 					<button
-						className="bg-black text-white px-4 py-2 rounded flex items-center gap-2"
+						className="bg-black dark:bg-gray-400 text-white dark:text-black px-4 py-2 rounded flex items-center gap-2"
 						onClick={() => setPage(previousPage)}
 					>
 						<FaArrowLeftLong />
@@ -75,7 +81,7 @@ export default function AdminHome() {
 				<p className="text-xl">Page: {page}</p>
 				{nextPage && (
 					<button
-						className="bg-black text-white px-4 py-2 rounded flex items-center gap-2"
+						className="bg-black dark:bg-gray-400 text-white dark:text-black px-4 py-2 rounded flex items-center gap-2"
 						onClick={() => setPage(nextPage)}
 					>
 						Next

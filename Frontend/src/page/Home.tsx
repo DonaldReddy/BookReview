@@ -5,6 +5,7 @@ import CategoryBooks from "../components/Home/CategoryBooks";
 import ContactUs from "../components/Home/ContactUs";
 
 export default function Home() {
+
   return (
     <div className="w-full min-h-dvh">
       {/* Hero Section */}
@@ -15,6 +16,7 @@ export default function Home() {
           alt=""
           className="absolute inset-0 w-full h-full object-cover z-0"
         />
+
 
         {/* Overlay Content */}
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
