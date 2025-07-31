@@ -19,7 +19,14 @@ const ContributorsSection: React.FC = () => {
     const fetchContributors = async () => {
       try {
         const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contributors`);
+        console.log(response)
         const data: Contributor[] = await response.json();
+
+        if (!Array.isArray(data)) {
+        console.error("Unexpected response:", data);
+        setContributors([]); // fallback to empty array
+        return;
+      }
         setContributors(data);
       } catch (error) {
         console.error('Failed to fetch contributors:', error);
