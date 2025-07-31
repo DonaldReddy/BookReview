@@ -1,3 +1,4 @@
+import { GoogleLogin } from "@react-oauth/google";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import { useAppDispatch, useAppSelector } from "../redux/store";
@@ -5,6 +6,7 @@ import { authActions } from "../redux/slices/authSlice";
 import React, { useEffect } from "react";
 import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
 import Loader from "../components/Loader";
+import { toast } from "react-toastify";
 
 interface ErrorState {
   email: string;
@@ -62,7 +64,9 @@ export default function SignUp() {
     if (!userInfo.password) {
       currentError.password = "Please create a password";
     } else if (
-      !/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+={}\[\]:;"'<>,.?~`-]{8,}$/.test(userInfo.password)
+      !/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+={}\[\]:;"'<>,.?~`-]{8,}$/.test(
+        userInfo.password
+      )
     ) {
       currentError.password =
         "Password must be at least 8 characters with at least one letter and one number.";
@@ -77,6 +81,10 @@ export default function SignUp() {
     return Object.values(currentError).every((err) => err === "");
   };
 
+
+	const togglePasswordVisibility = () => {
+		setShowPassword(!showPassword);
+	};
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -92,7 +100,9 @@ export default function SignUp() {
     } catch (error: any) {
       console.error("Sign up error:", error);
       setError({
-        email: error.response?.data?.message?.includes("email") ? error.response.data.message : "",
+        email: error.response?.data?.message?.includes("email")
+          ? error.response.data.message
+          : "",
         password: error.response?.data?.message?.includes("password")
           ? error.response.data.message
           : "",
@@ -101,97 +111,123 @@ export default function SignUp() {
           : "Something went wrong. Please try again.",
         confirmPassword: "",
       });
+      toast.error(
+        error.response?.data?.message || "Sign up failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-[#e6e0ff] to-[#f3e8ff] flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-md">
-        <div className="bg-white shadow-2xl rounded-2xl p-8 space-y-8 border border-violet-200">
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold text-violet-700">Create Your Account</h1>
-            <p className="text-gray-600">Begin your reading journey today with us.</p>
-          </div>
+	return (
+		<div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8">
+			<div className="w-full max-w-md">
+				<div className="bg-white dark:bg-slate-800 shadow-2xl rounded-2xl p-8 space-y-8">
+					{/* Header */}
+					<div className="text-center space-y-2">
+						<h1 className="text-3xl font-bold text-gray-900 dark:text-white">Create Account</h1>
+						<p className="text-gray-600 dark:text-gray-300">Join us and get started today</p>
+					</div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label htmlFor="name" className="block text-sm font-semibold text-gray-700">
-                Full Name
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
-                </span>
-                <input
-                  id="name"
-                  type="text"
-                  name="name"
-                  value={userInfo.name}
-                  onChange={handleInputChange}
-                  placeholder="Your full name"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 focus:ring-4 focus:ring-violet-500 focus:border-violet-500 focus:ring-offset-1"
-                  disabled={loading}
-                  required
-                />
-              </div>
-              {error.name && <p className="text-sm text-red-500">{error.name}</p>}
-            </div>
+					{/* Form */}
+					<form onSubmit={handleSubmit} className="space-y-6">
+						{/* Name Field */}
+						<div className="space-y-2">
+							<label htmlFor="name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+								Full Name
+							</label>
+							<div className="relative">
+								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+									<User className="h-5 w-5 text-gray-400 dark:text-gray-300" />
+								</div>
+								<input
+									id="name"
+									type="text"
+									placeholder="Enter your full name"
+									name="name"
+									className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
 
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
-                Email Address
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                </span>
-                <input
-                  id="email"
-                  type="email"
-                  name="email"
-                  value={userInfo.email}
-                  onChange={handleInputChange}
-                  placeholder="you@example.com"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 focus:ring-4 focus:ring-violet-500 focus:border-violet-500 focus:ring-offset-1"
-                  disabled={loading}
-                  required
-                />
-              </div>
-              {error.email && <p className="text-sm text-red-500">{error.email}</p>}
-            </div>
+									value={userInfo.name}
+									onChange={handleInputChange}
+									required
+									disabled={loading}
+								/>
+							</div>
+							{error.name && (
+								<p className="text-red-500 dark:text-red-400 text-sm font-medium flex items-center gap-1">
+									{error.name}
+								</p>
+							)}
+						</div>
 
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
-                Password
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </span>
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={userInfo.password}
-                  onChange={handleInputChange}
-                  placeholder="Create a secure password"
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 focus:ring-4 focus:ring-violet-500 focus:border-violet-500 focus:ring-offset-1"
-                  disabled={loading}
-                  required
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 inset-y-0 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={loading}
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
-                </button>
-              </div>
-              {error.password && <p className="text-sm text-red-500">{error.password}</p>}
-            </div>
+						{/* Email Field */}
+						<div className="space-y-2">
+							<label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+								Email Address
+							</label>
+							<div className="relative">
+								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+									<Mail className="h-5 w-5 text-gray-400 dark:text-gray-300" />
+								</div>
+								<input
+									id="email"
+									type="email"
+									placeholder="Enter your email"
+									name="email"
+									className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
+									value={userInfo.email}
+									onChange={handleInputChange}
+									required
+									disabled={loading}
+								/>
+							</div>
+							{error.email && (
+								<p className="text-red-500 dark:text-red-400 text-sm font-medium flex items-center gap-1">
+									{error.email}
+								</p>
+							)}
+						</div>
+
+						{/* Password Field */}
+						<div className="space-y-2">
+							<label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+								Password
+							</label>
+							<div className="relative">
+								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+									<Lock className="h-5 w-5 text-gray-400 dark:text-gray-300" />
+								</div>
+								<input
+									id="password"
+									type={showPassword ? "text" : "password"}
+									placeholder="Create a strong password"
+									name="password"
+									className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
+									value={userInfo.password}
+									onChange={handleInputChange}
+									required
+									disabled={loading}
+								/>
+								<button
+									type="button"
+									onClick={togglePasswordVisibility}
+									disabled={loading}
+									className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 dark:hover:bg-gray-300 rounded-r-lg transition-colors duration-200 min-w-[44px] min-h-[44px] justify-center disabled:cursor-not-allowed disabled:hover:bg-transparent"
+									aria-label={showPassword ? "Hide password" : "Show password"}
+								>
+									{showPassword ? (
+										<EyeOff className="h-5 w-5 text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 " />
+									) : (
+										<Eye className="h-5 w-5 text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400" />
+									)}
+								</button>
+							</div>
+							{error.password && (
+								<p className="text-red-500 dark:text-red-400 text-sm font-medium flex items-center gap-1">
+									{error.password}
+								</p>
+							)}
+						</div>
 
             <div className="space-y-2">
               <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700">
@@ -228,7 +264,7 @@ export default function SignUp() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 shadow-lg flex justify-center items-center gap-2"
+                className="w-full bg-blue-500 hover:bg-blue-600/70 text-gray-100 font-semibold py-3 px-4 rounded-lg transition duration-300 shadow-lg flex justify-center items-center gap-2"
               >
                 {loading ? (
                   <>
@@ -239,25 +275,58 @@ export default function SignUp() {
                   "Create Account"
                 )}
               </button>
-              <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 w-64 bg-green-100 text-green-800 text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition-all duration-300 px-3 py-2 pointer-events-none group-hover:pointer-events-auto z-10">
+              <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 w-64 bg-blue-100 text-blue-800 text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition-all duration-300 px-3 py-2 pointer-events-none group-hover:pointer-events-auto z-10">
                 Please double-check your inputs before creating the account.
               </div>
             </div>
           </form>
 
-          <div className="text-center pt-4 border-t border-gray-100">
-            <p className="text-gray-600">
-              Already have an account?{" "}
-              <Link
-                to="/sign-in"
-                className="font-semibold text-violet-600 hover:text-violet-800 transition-colors duration-200"
-              >
-                Login
-              </Link>
-            </p>
+          {/* Divider */}
+          <div className="flex items-center justify-center gap-4 text-sm text-gray-400 mt-4">
+            <div className="h-px bg-gray-300 flex-1" />
+            <span>or continue with</span>
+            <div className="h-px bg-gray-300 flex-1" />
           </div>
-        </div>
-      </div>
-    </div>
-  );
+
+          {/* Google Sign Up/Login */}
+          <div className="flex items-center justify-center mt-4">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const res = await api.post("/api/v1/auth/google-auth", {
+                    token: credentialResponse.credential,
+                  });
+
+                  dispatch(authActions.login(res.data.user));
+                  if (res.data.user.role === "ADMIN") {
+                    router("/admin");
+                  } else {
+                    router("/");
+                  }
+                } catch (err) {
+                  console.error("Google SignUp error", err);
+                }
+              }}
+              onError={() => {
+                console.error("Google Login Failed");
+              }}
+            />
+          </div>
+
+					{/* Footer */}
+					<div className="text-center pt-4 border-t border-gray-100 dark:border-gray-600">
+						<p className=" text-gray-600 dark:text-gray-100">
+							Already have an account?{" "}
+							<Link 
+								to="/sign-in" 
+								className="font-semibold text-blue-600 dark:text-blue-500 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200"
+							>
+								Sign In
+							</Link>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 }

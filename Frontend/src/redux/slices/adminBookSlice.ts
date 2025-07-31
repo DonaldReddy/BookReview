@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Book } from "../../types";
 import { api } from "../../api";
+import { toast } from "react-toastify";
 
 interface AdminBookState {
 	books: {
@@ -83,6 +84,11 @@ const adminBookSlice = createSlice({
 		builder.addCase(fetchBooks.rejected, (state, action) => {
 			state.isLoading = false;
 			state.error = action.payload as string;
+			toast.error(action.payload || "Failed to load books", {
+				position: "top-right",
+				autoClose: 3000,
+				theme: "colored",
+			});
 		});
 		builder.addCase(deleteBook.pending, (state) => {
 			state.isLoading = true;
@@ -93,10 +99,22 @@ const adminBookSlice = createSlice({
 				(book) => book.id !== action.payload,
 			);
 			state.error = null;
+
+			toast.success("Book deleted successfully!", {
+				position: "top-right",
+				autoClose: 3000,
+				theme: "colored",
+			});
 		});
 		builder.addCase(deleteBook.rejected, (state, action) => {
 			state.isLoading = false;
 			state.error = action.payload as string;
+
+		toast.error(action.payload || "Failed to delete book", {
+				position: "top-right",
+				autoClose: 3000,
+				theme: "colored",
+			});
 		});
 	},
 });

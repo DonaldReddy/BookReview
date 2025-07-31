@@ -54,13 +54,13 @@ export default function ReviewForm({
 
 	return (
 		<div className="fixed top-0 left-0 right-0 bottom-0 bg-black/50 flex items-center justify-center z-50 p-2">
-			<div className="bg-white p-4 rounded-lg shadow-md w-full lg:w-2/3 h-3/4">
+			<div className="bg-white dark:bg-gray-900 text-black dark:text-white p-4 rounded-lg shadow-md w-full lg:w-2/3 h-3/4">
 				<h2 className="text-xl mb-4">
 					Writing Review for <span className="font-bold">"{book.title}"</span>
 					by <span className="font-bold">{book.author}</span>
 				</h2>
 				<textarea
-					className="w-full p-2 border rounded outline-none resize-none"
+					className="w-full p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white rounded outline-none resize-none"
 					placeholder="Your review... at least 30 words"
 					rows={10}
 					value={reviewInfo.aiComment || reviewInfo.comment}
@@ -126,19 +126,19 @@ export default function ReviewForm({
 				</div>
 				<div className="flex flex-wrap gap-3 justify-end mt-4">
 					{reviewInfo.comment.split(" ").length < 30 && (
-						<p className=" text-white py-2 px-4 rounded mr-2 animated-background bg-gradient-to-r from-blue-500 via-blue-400 to-indigo-500 ">
+						<p className=" text-white dark:text-black py-2 px-4 rounded mr-2 animated-background bg-gradient-to-r from-blue-500 via-blue-400 to-indigo-500 dark:from-blue-300 dark:via-blue-200 dark:to-indigo-300 cursor-pointer">
 							Write{" "}
 							{30 -
 								(reviewInfo.comment
 									? reviewInfo.comment.split(" ").length
 									: 0)}{" "}
 							more words to Rewrite with AI{" "}
-							<span className="text-black text-2xl">🤖</span>
+							<span className="text-black dark:text-white text-2xl">🤖</span>
 						</p>
 					)}
 					{reviewInfo.comment.split(" ").length >= 30 && (
 						<button
-							className=" text-white py-2 px-4 rounded mr-2 animated-background bg-gradient-to-r from-blue-500 via-blue-400 to-indigo-500 cursor-pointer"
+							className=" text-white dark:text-black py-2 px-4 rounded mr-2 animated-background bg-gradient-to-r from-blue-500 via-blue-400 to-indigo-500 dark:from-blue-300 dark:via-blue-200 dark:to-indigo-300 cursor-pointer"
 							onClick={reWriteWithAI}
 							disabled={aiLoading}
 						>
@@ -157,7 +157,7 @@ export default function ReviewForm({
 
 					 {reviewInfo.aiComment && (
 					<button
-						className="bg-white text-black py-2 px-4 rounded mr-2 border cursor-pointer hover:bg-black hover:text-white"
+						className="bg-white dark:bg-gray-700 text-black dark:text-gray-100 py-2 px-4 rounded mr-2 border cursor-pointer hover:bg-black dark:hover:bg-gray-100 hover:text-white dark:hover:text-black"
 						onClick={() =>
 							setReviewInfo({
 								...reviewInfo,
@@ -173,7 +173,7 @@ export default function ReviewForm({
 
 					 {reviewInfo.aiComment && (
 					<button
-						className="bg-white text-black py-2 px-4 rounded mr-2 border cursor-pointer  hover:bg-black hover:text-white"
+						className="bg-white dark:bg-gray-700 text-black dark:text-black py-2 px-4 rounded mr-2 border cursor-pointer  hover:bg-black dark:hover:bg-gray-100 hover:text-white dark:hover:text-black"
 						onClick={() => setReviewInfo({ ...reviewInfo, aiComment: "" })}
 						disabled={isLoading || aiLoading}
 					>
@@ -182,14 +182,14 @@ export default function ReviewForm({
 					)}
 
 					<button
-						className="bg-red-600 text-white py-2 px-4 rounded mr-2 border cursor-pointer"
+						className="bg-red-600 dark:bg-red-400 text-white dark:text-black py-2 px-4 rounded mr-2 border cursor-pointer"
 						onClick={handleClose}
 						disabled={isLoading || aiLoading}
 					>
 						Cancel
 					</button>
 					<button
-						className="bg-black text-white py-2 px-4 rounded cursor-pointer"
+						className="bg-black dark:bg-gray-100 text-white dark:text-black py-2 px-4 rounded cursor-pointer"
 						disabled={
 							isLoading ||
 							aiLoading ||

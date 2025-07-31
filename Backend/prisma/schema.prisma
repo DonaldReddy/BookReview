@@ -8,15 +8,20 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  reviews   Review[]
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  password     String?
+  googleId     String?
+  profileImage String?
+  role         String   @default("USER")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  reviews      Review[]   
 }
+
+
 
 model Book {
   id          String   @id @default(cuid())

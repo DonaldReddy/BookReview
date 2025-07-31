@@ -2,7 +2,7 @@ import axios from "axios";
 import { store } from "./redux/store";
 import { authActions } from "./redux/slices/authSlice";
 import { adminBookActions } from "./redux/slices/adminBookSlice";
-
+console.log(import.meta.env.VITE_API_BASE_URL);
 const api = axios.create({
 	baseURL: import.meta.env.VITE_API_BASE_URL,
 	withCredentials: true,

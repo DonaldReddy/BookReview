@@ -1,34 +1,33 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { authActions } from "../../redux/slices/authSlice";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { RxExit } from "react-icons/rx";
 import { IoMenu, IoClose } from "react-icons/io5";
-import { BsSun, BsMoon } from "react-icons/bs";
-import { Bell } from "lucide-react";
-import { Phone } from "lucide-react";
+import { Bell, Phone } from "lucide-react";
 import logo from "../../assets/logo.png";
+import ThemeToggle from "./ThemeToggle";
 
 export default function NavBar() {
   const location = useLocation();
   const { isAuthenticated, user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [openMenu, setOpenMenu] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(true);
   const [clicked, setClicked] = useState("");
+  const lastScrollY = useRef(0);
 
-  const toggleDarkMode = () => setDarkMode((prev) => !prev);
   const handleLogout = () => {
     setOpenMenu(false);
     dispatch(authActions.logout());
   };
 
-  const linkClass = (path:string) =>
+  const linkClass = (path: string) =>
     `px-3 py-1 rounded-md transition-all duration-200 transform hover:scale-110 ${
       location.pathname === path
-        ? "bg-violet-500 text-white font-semibold"
-        : "text-black/70 hover:bg-violet-200 hover:text-black"
+        ? "bg-blue-700/60 text-white font-semibold"
+        : "text-black/70 dark:text-gray-200 hover:bg-blue-200 dark:hover:bg-blue-200/20 hover:text-black dark:hover:text-gray-100"
     } ${clicked === path ? "text-lg font-bold scale-110" : ""}`;
 
   const navLinks = [
@@ -39,32 +38,55 @@ export default function NavBar() {
       to: "/contact",
       label: (
         <>
-          <Phone size={14} className="inline mr-1" />Contact
+          <Phone size={14} className="inline mr-1" /> Contact
         </>
       ),
     },
     { to: "/about", label: "About Us" },
   ];
 
-  const handleClick = (path:string) => {
+  const handleClick = (path: string) => {
     setClicked(path);
     setTimeout(() => setClicked(""), 300);
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (typeof window !== "undefined") {
+        const currentScrollY = window.scrollY;
+        setShowNavbar(currentScrollY < lastScrollY.current || currentScrollY < 60);
+        lastScrollY.current = currentScrollY;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="p-3 max-w-screen-2xl fixed top-0 left-0 right-0 z-50 bg-[#e7f0fc] shadow">
-      <div className="h-14 w-full flex justify-between items-center rounded-md border border-black/20 px-4 bg-[#f5f5f5]">
+    <div
+      className={`p-2 max-w-screen-2xl fixed top-0 left-0 right-0 z-100 backdrop-blur-md bg-blue-100/40 dark:bg-black/30 shadow-sm transform transition-transform duration-300 ${
+        showNavbar ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
+      <div className="max-w-screen-2xl mx-auto h-14 px-4 flex justify-between items-center transition-all duration-300">
         {/* Logo */}
+        <>
         <Link to="/" className="flex items-center gap-2 w-1/4 md:w-1/5">
           <img src={logo} alt="logo" className="h-10 w-auto" />
-          <span className="text-violet-700 text-xl font-bold hover:scale-110 transition-all">
+          <span className="text-gray-700 dark:text-gray-200 text-xl font-bold hover:scale-110 transition-all">
             BookReview<span className="text-sm">.in</span>
           </span>
         </Link>
+        <div className="mt-2 sm:mt-0">
+              <ThemeToggle />
+        </div></>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-4 w-4/5 justify-end relative">
-          <Link to="/" onClick={() => handleClick("/")} className={linkClass("/")}>Home</Link>
+        <div className="hidden md:flex items-center gap-4 w-4/5 justify-end">
+          <Link to="/" onClick={() => handleClick("/")} className={linkClass("/")}>
+            Home
+          </Link>
           {navLinks.map((link) => (
             <Link
               key={link.to}
@@ -75,7 +97,6 @@ export default function NavBar() {
               {link.label}
             </Link>
           ))}
-
           {isAuthenticated && (
             <Link
               to={`/app/profile/${user.id}`}
@@ -85,42 +106,26 @@ export default function NavBar() {
               <FaRegUserCircle size={20} className="inline mr-1" /> Dashboard
             </Link>
           )}
-
-          <Bell size={22} className="text-black/70 hover:text-violet-500 cursor-pointer transition" />
-
           {!isAuthenticated ? (
             <Link
               to="/sign-in"
+              className="px-5 py-2 rounded-full bg-blue-700/60 dark:bg-blue-700/60  text-gray-100 hover:bg-blue-400 dark:hover:bg-blue-500 font-semibold transition-all"
               onClick={() => handleClick("/sign-in")}
-              className="px-4 py-1 rounded-full bg-green-600 text-white transition-all duration-300 transform hover:bg-green-700 hover:scale-105 hover:shadow-lg active:scale-110 active:bg-green-800"
             >
               Login / Register
             </Link>
           ) : (
             <RxExit
-              className="text-black/60 hover:scale-105 transition cursor-pointer"
+              className="text-black/60 dark:text-gray-200 hover:scale-105 transition cursor-pointer"
               size={22}
               onClick={handleLogout}
               title="Logout"
             />
           )}
 
-          {/* Dark Mode Toggle */}
-          <button
-            onClick={toggleDarkMode}
-            title="Toggle Dark Mode"
-            className="p-1 rounded hover:bg-violet-100"
-          >
-            {darkMode ? <BsSun size={18} /> : <BsMoon size={18} />}
-          </button>
-        </div>
-
         {/* Mobile Nav Icons */}
         <div className="md:hidden flex items-center justify-end gap-2">
-          <Bell size={20} className="text-black/70" />
-          <button onClick={toggleDarkMode}>
-            {darkMode ? <BsSun size={18} /> : <BsMoon size={18} />}
-          </button>
+          <Bell size={20} className="text-black/70 dark:text-gray-200" />
           <button onClick={() => setOpenMenu(!openMenu)}>
             {openMenu ? <IoClose size={30} /> : <IoMenu size={30} />}
           </button>
@@ -129,9 +134,11 @@ export default function NavBar() {
 
       {/* Mobile Dropdown */}
       {openMenu && (
-        <div className="md:hidden absolute top-16 right-4 w-11/12 max-w-sm bg-white rounded-md shadow-xl p-4 z-50">
+        <div className="md:hidden absolute top-16 right-4 w-11/12 max-w-sm bg-white dark:bg-gray-700 rounded-md shadow-xl p-4 z-50">
           <div className="flex flex-col gap-4">
-            <Link to="/" onClick={() => setOpenMenu(false)} className={linkClass("/")}>Home</Link>
+            <Link to="/" onClick={() => setOpenMenu(false)} className={linkClass("/")}>
+              Home
+            </Link>
             {navLinks.map((link) => (
               <Link
                 key={link.to}
@@ -154,22 +161,27 @@ export default function NavBar() {
             {!isAuthenticated ? (
               <Link
                 to="/sign-in"
-                className="bg-green-600 text-white px-4 py-2 text-center rounded-md hover:bg-green-700 transition-all transform hover:scale-105 active:scale-110"
+                className="bg-blue-700/60 dark:bg-blue-700/60  text-white hover:bg-blue-400 dark:hover:bg-blue-400 px-4 py-2 font-semibold text-center rounded-md transition-all"
                 onClick={() => setOpenMenu(false)}
               >
                 Login / Register
               </Link>
+              
             ) : (
+              <>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 text-black/70 hover:text-black"
+                className="flex items-center gap-2 text-black/70 dark:text-gray-300 hover:text-black dark:hover:text-gray-100"
               >
                 <RxExit size={20} /> Logout
               </button>
+              
+              </>
             )}
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }
