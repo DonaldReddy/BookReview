@@ -12,7 +12,7 @@ export default function Home() {
         {/* Background Image */}
         <img
           src={mainBg}
-          alt="background"
+          alt=""
           className="absolute inset-0 w-full h-full object-cover z-0"
         />
 
