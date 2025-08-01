@@ -10,6 +10,14 @@ export default function Layout() {
 
 
 			<NavBar />
+			<div className=" my-15 h-full w-full ">{<Outlet />}</div>
+			<div className="mb-4">
+				Made with ⚡ by{" "}
+				<a href="https://donaldreddy.xyz" target="_blank" className="underline	">
+					Donald Reddy
+				</a>{" "}
+				{new Date().getFullYear()}
+			</div>
 			<div className=" my-15 h-full w-full px-5">{<Outlet />}</div>
 			<Footer/>
 		</div>
