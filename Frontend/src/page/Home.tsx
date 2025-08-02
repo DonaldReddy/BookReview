@@ -7,16 +7,16 @@ export default function Home() {
 	return (
 		<div className="w-full min-h-dvh">
 			{/* Hero Section */}
-			<div className="h-[70vh] md:h-[80vh] relative">
+			<div className="h-[70vh] md:h-[80vh] ">
 				{/* Background Image */}
 				<img
 					src={mainBg}
 					alt=""
-					className="absolute inset-0 w-full h-full object-cover z-0"
+					className="absolute inset-0 w-full h-full object-cover "
 				/>
 
 				{/* Overlay Content */}
-				<div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
+				<div className="relative  flex flex-col items-center justify-center h-full text-center text-white px-4">
 					<div className="mt-32 md:mt-40">
 						<h1 className="text-3xl sm:text-4xl md:text-6xl font-pacifico font-bold text-shadow-black">
 							Book Review Taken to Next Level with AI
