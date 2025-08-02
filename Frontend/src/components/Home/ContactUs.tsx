@@ -20,7 +20,7 @@ function ContactUs() {
           <p className="text-gray-500 text-lg">Give Us Your Valuable Feedback</p>
         </div>
 
-        <form className="flex flex-col gap-4" >
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           {/* Name */}
           <div>
             <label className="block text-lg font-medium">Name</label>
