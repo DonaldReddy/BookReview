@@ -10,16 +10,41 @@ const fadeInUp = {
 
 const AboutUs = () => {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-violet-200 dark:from-[#4338ca]/90 to-yellow-100/60 dark:to-[#fde68a]/70 rounded-2xl py-16 px-6">
+    <div className="min-h-screen w-full bg-gradient-to-br from-[#e4e5e6] via-[#8ca4b6] to-[#00416a]
+from-violet-200 dark:from-[#4338ca]/90 to-yellow-100/60 dark:to-[#fde68a]/70 rounded-2xl py-16 px-6">
       {/* Header Section */}
       <motion.div
-        className="text-center mb-16"
+        className="text-center mt-16"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
         variants={fadeInUp}
       >
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">About</h1>
+      <motion.h1
+  className="text-5xl font-bold mb-6 text-center"
+  initial={{ opacity: 0, y: -20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+>
+  <motion.span
+    className="inline-block rounded-full border-2 border-blue-400 px-6 py-2 text-gray-900 dark:text-white font-serif"
+   whileHover={{
+  x: [0, 10, 0],
+  rotate: [0, 9, 0],
+  transition: {
+    duration: 0.7,
+    ease: "easeInOut",
+  },
+}}
+
+    transition={{ type: "spring", stiffness: 200 }}
+  >
+    About Us
+  </motion.span>
+</motion.h1>
+
+
+
         <h2 className="text-2xl md:text-3xl font-semibold text-blue-900/70 dark:text-[#a5b4fc] p-700 mb-6">
           <Typewriter
             words={["BookReview.in"]}
@@ -32,23 +57,29 @@ const AboutUs = () => {
           />
         </h2>
 
-        <p className="text-gray-500 dark:text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
-          Welcome to BookReview.in — a collaborative open-source platform for book lovers! Whether you're a curious
-          reader, techie, or open-source contributor, we empower you to explore books, share reviews, and grow with a
-          passionate community.
-        </p>
+       <motion.p
+  className="text-gray-700 dark:text-gray-900 text-lg max-w-2xl mx-auto leading-relaxed italic bg-gradient-to-br from-white/30 to-white/10 p-4 rounded-xl shadow-md"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6 }}
+>
+  Welcome to <span className="font-semibold text-blue-600 dark:text-yellow-400">BookReview.in</span> — a collaborative open-source platform for book lovers! Whether you're a curious
+  reader, techie, or open-source contributor, we empower you to explore books, share reviews, and grow with a
+  passionate community.
+</motion.p>
+
       </motion.div>
 
       {/* Cards Section */}
       <div className="grid md:grid-cols-2 gap-10 mb-20">
         <motion.div
-          className="rounded-2xl bg-white dark:bg-gray-300 p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-200 "
+          className="mt-16 rounded-2xl bg-white dark:bg-gray-300 p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-200 "
           variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
         >
-          <h3 className="text-2xl font-semibold text-blue-900 hover:scale-105 transition-transform duration-300 mb-3 flex items-center gap-2">
+          <h3 className="shadow-2xl shadow-amber-500/50 hover:shadow-amber-500/70 transition-shadow duration-300 text-2xl font-semibold text-blue-900 hover:scale-105 transition-transform duration-300 mb-3 flex items-center gap-2">
             🌐 Our Motto
           </h3>
           <p className="text-gray-600 text-base leading-relaxed">
@@ -58,7 +89,7 @@ const AboutUs = () => {
         </motion.div>
 
         <motion.div
-          className="rounded-2xl bg-white dark:bg-gray-300 p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-200"
+          className="mt-16 rounded-2xl bg-white dark:bg-gray-300 p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-200"
           variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
