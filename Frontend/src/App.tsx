@@ -29,8 +29,7 @@ const router = createBrowserRouter(
 			<Route path="sign-in" element={<SignIn />} />
 			<Route path="sign-up" element={<SignUp />} />
 
-			<Route path="about" element={<AboutUs />} /> {/* ✅ About Us route */}
-
+			<Route path="about" element={<AboutUs />} />
 			<Route path="app" element={<ProtectedRoute access="USER" />}>
 				<Route path="books/:id" element={<Book />} />
 				<Route path="books" element={<FindBooks />} />
@@ -42,8 +41,8 @@ const router = createBrowserRouter(
 			</Route>
 
 			<Route path="*" element={<Navigate to="/" />} />
-		</Route>
-	)
+		</Route>,
+	),
 );
 
 function InnerApp() {
