@@ -31,7 +31,7 @@ const Footer: React.FC = () => {
 							</li>
 							<li>
 								<Link to="/app/books?page=1" className="hover:underline">
-									Books
+									Browse Books
 								</Link>
 							</li>
 							<li>
@@ -42,6 +42,36 @@ const Footer: React.FC = () => {
 							<li>
 								<Link to="/about" className="hover:underline">
 									About Us
+								</Link>
+							</li>
+							<li>
+								<Link to="/ai-suggestions" className="hover:underline">
+									AI Suggestions
+								</Link>
+							</li>
+						</ul>
+					</div>
+					<div className="space-y-2 md:px-6 pt-6 md:pt-0">
+						<h4 className="text-md font-semibold">Support</h4>
+						<ul className="space-y-1 text-sm">
+							<li>
+								<Link to="/contact us" className="hover:underline">
+									contact Us
+								</Link>
+							</li>
+							<li>
+								<Link to="/privacy policy" className="hover:underline">
+									Privacy policy
+								</Link>
+							</li>
+							<li>
+								<Link to="/T&C" className="hover:underline">
+									Terms & conditions
+								</Link>
+							</li>
+							<li>
+								<Link to="/help center" className="hover:underline">
+									Help center
 								</Link>
 							</li>
 						</ul>
@@ -98,14 +128,6 @@ const Footer: React.FC = () => {
 						&copy; {new Date().getFullYear()} <strong>BookReview.in</strong> All
 						rights reserved.
 					</div>
-
-					{/* Go to Top Button */}
-					<button
-						onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-						className="px-2 py-1 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-400 transition"
-					>
-						Back to the top
-					</button>
 				</div>
 			</div>
 		</footer>
