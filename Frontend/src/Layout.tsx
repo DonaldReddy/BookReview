@@ -10,8 +10,8 @@ export default function Layout() {
   dark:bg-slate-800 dark:text-white transition-colors"
 		>
 			<NavBar />
-			<div className=" my-15 h-full w-full ">{<Outlet />}</div>
-		
+			<div className=" my-24 h-full w-full ">{<Outlet />}</div>
+
 			<Footer />
 		</div>
 	);

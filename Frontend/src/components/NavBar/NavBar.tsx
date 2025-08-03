@@ -29,9 +29,9 @@ export default function NavBar() {
 		} ${clicked === path ? "text-lg font-bold scale-110" : ""}`;
 
 	const navLinks = [
-		{ to: "/books", label: "Browse Books" },
-		{ to: "/ai-suggestions", label: "AI Suggestions" },
-		{ to: "/blog", label: "Blog" },
+		{ to: "app/books", label: "Browse Books" },
+		{ to: "app/ai-suggestions", label: "AI Suggestions" },
+		{ to: "app/blog", label: "Blog" },
 		{
 			to: "/contact",
 			label: (

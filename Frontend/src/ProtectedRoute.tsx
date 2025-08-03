@@ -16,5 +16,5 @@ export default function ProtectedRoute({
 
 	if (access === user?.role || user?.role === "ADMIN") return <Outlet />;
 
-	return <Navigate to="/" />;
+	return <Navigate to="/sign-in" />;
 }
