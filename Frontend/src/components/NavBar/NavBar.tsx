@@ -5,7 +5,7 @@ import { useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { RxExit } from "react-icons/rx";
 import { IoMenu, IoClose } from "react-icons/io5";
-import { Bell, Phone } from "lucide-react";
+import { Bell } from "lucide-react";
 import logo from "../../assets/logo.png";
 import ThemeToggle from "./ThemeToggle";
 
@@ -30,16 +30,6 @@ export default function NavBar() {
 
 	const navLinks = [
 		{ to: "app/books", label: "Browse Books" },
-		{ to: "app/ai-suggestions", label: "AI Suggestions" },
-		{ to: "app/blog", label: "Blog" },
-		{
-			to: "/contact",
-			label: (
-				<>
-					<Phone size={14} className="inline mr-1" /> Contact
-				</>
-			),
-		},
 		{ to: "/about", label: "About Us" },
 	];
 
@@ -88,7 +78,7 @@ export default function NavBar() {
 							onClick={() => handleClick(`/app/profile/${user.id}`)}
 							className={linkClass(`/app/profile/${user.id}`)}
 						>
-							<FaRegUserCircle size={20} className="inline mr-1" /> Dashboard
+							<FaRegUserCircle size={20} className="inline mr-1" /> My Account
 						</Link>
 					)}
 					{!isAuthenticated ? (
@@ -111,14 +101,14 @@ export default function NavBar() {
 					<div className="mt-2 sm:mt-0">
 						<ThemeToggle />
 					</div>
+				</div>
 
-					{/* Mobile Nav Icons */}
-					<div className="md:hidden flex items-center justify-end gap-2">
-						<Bell size={20} className="text-black/70 dark:text-gray-200" />
-						<button onClick={() => setOpenMenu(!openMenu)}>
-							{openMenu ? <IoClose size={30} /> : <IoMenu size={30} />}
-						</button>
-					</div>
+				{/* Mobile Nav Icons */}
+				<div className="md:hidden flex items-center justify-end gap-2">
+					<Bell size={20} className="text-black/70 dark:text-gray-200" />
+					<button onClick={() => setOpenMenu(!openMenu)}>
+						{openMenu ? <IoClose size={30} /> : <IoMenu size={30} />}
+					</button>
 				</div>
 
 				{/* Mobile Dropdown */}
@@ -148,8 +138,8 @@ export default function NavBar() {
 									className={linkClass(`/app/profile/${user.id}`)}
 									onClick={() => setOpenMenu(false)}
 								>
-									<FaRegUserCircle size={18} className="inline mr-1" />{" "}
-									Dashboard
+									<FaRegUserCircle size={18} className="inline mr-1" /> My
+									Account
 								</Link>
 							)}
 							{!isAuthenticated ? (
