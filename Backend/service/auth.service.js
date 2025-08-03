@@ -5,8 +5,6 @@ import bcrypt from "bcrypt";
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 class AuthService {
-	constructor() {}
-
 	signIn = async ({ email, password }) => {
 		const user = await userRepository.findUserByEmail(email);
 		if (!user) {
@@ -55,12 +53,14 @@ class AuthService {
 	googleAuth = async (token) => {
 		const ticket = await client.verifyIdToken({
 			idToken: token,
-			audience: process.env.GOOGLE_CLIENT_ID, // Must match frontend client ID
+			audience: process.env.GOOGLE_CLIENT_ID,
 		});
 
 		const payload = ticket.getPayload();
 
-		const { email, name, picture } = payload;
+		console.log("Google Auth Payload:", payload);
+
+		const { email, name, picture, sub } = payload;
 
 		let user = await userRepository.findUserByEmail(email);
 
@@ -68,7 +68,13 @@ class AuthService {
 			user = await userRepository.createNewUser({
 				name,
 				email,
-				picture,
+				profileImage: picture,
+				googleId: sub,
+			});
+		} else {
+			user = await userRepository.updateUser(user.id, {
+				profileImage: picture,
+				googleId: sub,
 			});
 		}
 

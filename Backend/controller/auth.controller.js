@@ -76,13 +76,13 @@ class AuthController {
 
 			const response = await authService.googleAuth(token);
 
-			// TODO: Create/find user in DB and respond
 			res.status(200).json({ user: response });
 		} catch (error) {
 			console.error("Google Auth Error:", error);
 			res.status(401).json({ message: "Invalid Google token" });
 		}
 	};
+
 	signOut = async (req, res) => {
 		res.clearCookie("token");
 
