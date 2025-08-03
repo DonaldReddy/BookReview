@@ -45,35 +45,6 @@ export default function SignIn() {
 			const response = await api.post("/api/v1/auth/sign-in", userInfo);
 			dispatch(authActions.login(response.data.user));
 			toast.success("Signed in successfully!", {
-			position: "top-right",
-			autoClose: 3000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			theme: "colored",
-		});
-			router("/");
-		} catch (error: unknown) {
-			// TODO add tostify error message
-			console.error("Sign in error:", error);
-			if (error instanceof AxiosError) {
-			const message =
-			error?.response?.data?.message ||
-			"Sign in failed. Please check your credentials.";
-
-		toast.error(message, {
-			position: "top-right",
-			autoClose: 3000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			theme: "colored",
-			});
-			} else {
-			// Handle unexpected errors
-			toast.error("An unexpected error occurred", {
 				position: "top-right",
 				autoClose: 3000,
 				hideProgressBar: false,
@@ -82,7 +53,34 @@ export default function SignIn() {
 				draggable: true,
 				theme: "colored",
 			});
-		}
+			router("/");
+		} catch (error: unknown) {
+			if (error instanceof AxiosError) {
+				const message =
+					error?.response?.data?.message ||
+					"Sign in failed. Please check your credentials.";
+
+				toast.error(message, {
+					position: "top-right",
+					autoClose: 3000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					theme: "colored",
+				});
+			} else {
+				// Handle unexpected errors
+				toast.error("An unexpected error occurred", {
+					position: "top-right",
+					autoClose: 3000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					theme: "colored",
+				});
+			}
 		} finally {
 			setLoading(false);
 		}
@@ -98,15 +96,22 @@ export default function SignIn() {
 				<div className="bg-white dark:bg-slate-800 shadow-2xl rounded-2xl p-8 space-y-8">
 					{/* Header */}
 					<div className="text-center space-y-2">
-						<h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome Back</h1>
-						<p className="text-gray-600 dark:text-gray-300">Sign in to your account</p>
+						<h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+							Welcome Back
+						</h1>
+						<p className="text-gray-600 dark:text-gray-300">
+							Sign in to your account
+						</p>
 					</div>
 
 					{/* Form */}
 					<form onSubmit={handleSubmit} className="space-y-6">
 						{/* Email Field */}
 						<div className="space-y-2">
-							<label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+							<label
+								htmlFor="email"
+								className="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+							>
 								Email Address
 							</label>
 							<div className="relative">
@@ -129,7 +134,10 @@ export default function SignIn() {
 
 						{/* Password Field */}
 						<div className="space-y-2">
-							<label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+							<label
+								htmlFor="password"
+								className="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+							>
 								Password
 							</label>
 							<div className="relative">
@@ -191,42 +199,50 @@ export default function SignIn() {
 						</button>
 					</form>
 					<div className="flex items-center justify-center gap-4 text-sm text-gray-400 mt-4">
-                        <div className="h-px bg-gray-300 flex-1" />
-                            <span>or continue with</span>
-                        <div className="h-px bg-gray-300 flex-1" />
-                    </div>
+						<div className="h-px bg-gray-300 flex-1" />
+						<span>or continue with</span>
+						<div className="h-px bg-gray-300 flex-1" />
+					</div>
 
-              {/* Google Sign Up/Login */}
-          <div className="flex items-center justify-center mt-4">
-            <GoogleLogin
-              onSuccess={async (credentialResponse) => {
-                try {
-                  const res = await api.post("/api/v1/auth/google-auth", {
-                    token: credentialResponse.credential,
-                  });
+					{/* Google Sign Up/Login */}
+					<div className="flex items-center justify-center mt-4">
+						<GoogleLogin
+							onSuccess={async (credentialResponse) => {
+								try {
+									const res = await api.post("/api/v1/auth/google-auth", {
+										token: credentialResponse.credential,
+									});
 
-                  dispatch(authActions.login(res.data.user));
-                  if (res.data.user.role === "ADMIN") {
-                    router("/admin");
-                  } else {
-                    router("/");
-                  }
-                } catch (err) {
-                  console.error("Google SignUp error", err);
-                }
-              }}
-              onError={() => {
-                console.error("Google Login Failed");
-              }}
-            />
-          </div>
+									dispatch(authActions.login(res.data.user));
+									if (res.data.user.role === "ADMIN") {
+										router("/admin");
+									} else {
+										router("/");
+									}
+								} catch (err) {
+									console.error("Google SignUp error", err);
+								}
+							}}
+							onError={() => {
+								toast.error("Google Login Failed", {
+									position: "top-right",
+									autoClose: 3000,
+									hideProgressBar: false,
+									closeOnClick: true,
+									pauseOnHover: true,
+									draggable: true,
+									theme: "colored",
+								});
+							}}
+						/>
+					</div>
 
-          {/* Footer */}
+					{/* Footer */}
 					<div className="text-center pt-4 border-t border-gray-100">
 						<p className="text-gray-600 dark:text-gray-400">
 							Don't have an account?{" "}
-							<Link 
-								to="/sign-up" 
+							<Link
+								to="/sign-up"
 								className="font-semibold text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200"
 							>
 								Register

@@ -1,5 +1,8 @@
+import { OAuth2Client } from "google-auth-library";
 import { userRepository } from "../repository/user.repo.js";
 import bcrypt from "bcrypt";
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 class AuthService {
 	constructor() {}
@@ -10,7 +13,7 @@ class AuthService {
 			throw new Error("User not found");
 		}
 
-		const isPasswordValid = await bcrypt.compare(password, user.password);
+		const isPasswordValid = bcrypt.compare(password, user.password);
 		if (!isPasswordValid) {
 			throw new Error("Invalid password");
 		}
@@ -49,29 +52,32 @@ class AuthService {
 		};
 	};
 
-	// 🆕 Google Auth Helpers
-	findByEmail = async (email) => {
-		return await userRepository.findUserByEmail(email);
-	};
-
-	createGoogleUser = async ({ name, email, googleId, picture }) => {
-		const newUser = await userRepository.createNewUser({
-			name,
-			email,
-			googleId,
-			profileImage: picture,
-			role: "USER",
+	googleAuth = async (token) => {
+		const ticket = await client.verifyIdToken({
+			idToken: token,
+			audience: process.env.GOOGLE_CLIENT_ID, // Must match frontend client ID
 		});
 
-		if (!newUser) {
-			throw new Error("Google user creation failed");
+		const payload = ticket.getPayload();
+
+		const { email, name, picture } = payload;
+
+		let user = await userRepository.findUserByEmail(email);
+
+		if (!user) {
+			user = await userRepository.createNewUser({
+				name,
+				email,
+				picture,
+			});
 		}
 
 		return {
-			id: newUser.id,
-			name: newUser.name,
-			email: newUser.email,
-			role: newUser.role,
+			id: user.id,
+			name: user.name,
+			email: user.email,
+			profileImage: user.profileImage,
+			role: user.role,
 		};
 	};
 }
