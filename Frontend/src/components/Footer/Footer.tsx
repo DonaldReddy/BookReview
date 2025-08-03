@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import spark from "../../assets/spark.svg";
-import ThemeToggle from "../NavBar/ThemeToggle";
 
 const Footer: React.FC = () => {
 	return (
