@@ -3,200 +3,258 @@ import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { authActions } from "../redux/slices/authSlice";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 
 export default function SignIn() {
-	const [userInfo, setUserInfo] = React.useState({
-		email: "",
-		password: "",
-	});
-	const router = useNavigate();
-	const { isAuthenticated, user } = useAppSelector((state) => state.auth);
-	const dispatch = useAppDispatch();
-	const [loading, setLoading] = React.useState(false);
-	const [showPassword, setShowPassword] = React.useState(false);
+  const [userInfo, setUserInfo] = React.useState({
+    email: "",
+    password: "",
+  });
+  const router = useNavigate();
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const [loading, setLoading] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [forgotPasswordMode, setForgotPasswordMode] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
 
-	useEffect(() => {
-		if (isAuthenticated && user) {
-			if (user.role === "ADMIN") {
-				router("/admin");
-			} else if (user.role === "USER") {
-				router("/");
-			}
-		}
-	}, [isAuthenticated, user, router]);
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === "ADMIN") {
+        router("/admin");
+      } else if (user.role === "USER") {
+        router("/");
+      }
+    }
+  }, [isAuthenticated, user, router]);
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target;
-		setUserInfo((prevState) => ({
-			...prevState,
-			[name]: value,
-		}));
-	};
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserInfo((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		setLoading(true);
-		try {
-			const response = await api.post("/api/v1/auth/sign-in", userInfo);
-			dispatch(authActions.login(response.data.user));
-			toast.success("Signed in successfully!", {
-			position: "top-right",
-			autoClose: 3000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			theme: "colored",
-		});
-			router("/");
-		} catch (error: unknown) {
-			// TODO add tostify error message
-			console.error("Sign in error:", error);
-			if (error instanceof AxiosError) {
-			const message =
-			error?.response?.data?.message ||
-			"Sign in failed. Please check your credentials.";
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await api.post("/api/v1/auth/sign-in", userInfo);
+      dispatch(authActions.login(response.data.user));
+      toast.success("Signed in successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
+      router("/");
+    } catch (error: unknown) {
+      // TODO add tostify error message
+      console.error("Sign in error:", error);
+      if (error instanceof AxiosError) {
+        const message =
+          error?.response?.data?.message ||
+          "Sign in failed. Please check your credentials.";
 
-		toast.error(message, {
-			position: "top-right",
-			autoClose: 3000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			theme: "colored",
-			});
-			} else {
-			// Handle unexpected errors
-			toast.error("An unexpected error occurred", {
-				position: "top-right",
-				autoClose: 3000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				theme: "colored",
-			});
-		}
-		} finally {
-			setLoading(false);
-		}
-	};
+        toast.error(message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
+      } else {
+        // Handle unexpected errors
+        toast.error("An unexpected error occurred", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
-	const togglePasswordVisibility = () => {
-		setShowPassword(!showPassword);
-	};
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
-	return (
-		<div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8">
-			<div className="w-full max-w-md">
-				<div className="bg-white dark:bg-slate-800 shadow-2xl rounded-2xl p-8 space-y-8">
-					{/* Header */}
-					<div className="text-center space-y-2">
-						<h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome Back</h1>
-						<p className="text-gray-600 dark:text-gray-300">Sign in to your account</p>
-					</div>
+  const handleForgotPassword = async () => {
+    if (!forgotPasswordEmail) {
+      toast.error("Please enter your email address", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
+      return;
+    }
 
-					{/* Form */}
-					<form onSubmit={handleSubmit} className="space-y-6">
-						{/* Email Field */}
-						<div className="space-y-2">
-							<label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-								Email Address
-							</label>
-							<div className="relative">
-								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-									<Mail className="h-5 w-5 text-gray-400 dark:text-gray-300" />
-								</div>
-								<input
-									id="email"
-									type="email"
-									placeholder="Enter your email"
-									name="email"
-									className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
-									value={userInfo.email}
-									onChange={handleInputChange}
-									required
-									disabled={loading}
-								/>
-							</div>
-						</div>
+    setForgotPasswordLoading(true);
+    try {
+      await api.post("/api/v1/auth/forgot-password", {
+        email: forgotPasswordEmail,
+      });
+      toast.success("Password reset email sent! Please check your inbox.", {
+        position: "top-right",
+        autoClose: 5000,
+        theme: "colored",
+      });
+      setForgotPasswordMode(false);
+      setForgotPasswordEmail("");
+    } catch (error: unknown) {
+      console.error("Forgot password error:", error);
+      if (error instanceof AxiosError) {
+        const message =
+          error?.response?.data?.message ||
+          "Failed to send password reset email";
+        toast.error(message, {
+          position: "top-right",
+          autoClose: 3000,
+          theme: "colored",
+        });
+      } else {
+        toast.error("An unexpected error occurred", {
+          position: "top-right",
+          autoClose: 3000,
+          theme: "colored",
+        });
+      }
+    } finally {
+      setForgotPasswordLoading(false);
+    }
+  };
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-md">
+        <div className="bg-white dark:bg-slate-800 shadow-2xl rounded-2xl p-8 space-y-8">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Welcome Back
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">
+              Sign in to your account
+            </p>
+          </div>
 
-						{/* Password Field */}
-						<div className="space-y-2">
-							<label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-								Password
-							</label>
-							<div className="relative">
-								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-									<Lock className="h-5 w-5 text-gray-400 dark:text-gray-300" />
-								</div>
-								<input
-									id="password"
-									type={showPassword ? "text" : "password"}
-									placeholder="Enter your password"
-									name="password"
-									className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
-									value={userInfo.password}
-									onChange={handleInputChange}
-									required
-									disabled={loading}
-								/>
-								<button
-									type="button"
-									onClick={togglePasswordVisibility}
-									disabled={loading}
-									className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 rounded-r-lg transition-colors duration-200 min-w-[44px] min-h-[44px] justify-center disabled:cursor-not-allowed"
-									aria-label={showPassword ? "Hide password" : "Show password"}
-								>
-									{showPassword ? (
-										<EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-									) : (
-										<Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-									)}
-								</button>
-							</div>
-						</div>
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email Field */}
+            <div className="space-y-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+              >
+                Email Address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-400 dark:text-gray-300" />
+                </div>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  name="email"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
+                  value={userInfo.email}
+                  onChange={handleInputChange}
+                  required
+                  disabled={loading}
+                />
+              </div>
+            </div>
 
-						{/* Forgot Password */}
-						<div className="flex justify-end">
-							<button
-								type="button"
-								disabled={loading}
-								className="text-sm font-medium text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-							>
-								Forgot Password?
-							</button>
-						</div>
+            {/* Password Field */}
+            <div className="space-y-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400 dark:text-gray-300" />
+                </div>
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  name="password"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
+                  value={userInfo.password}
+                  onChange={handleInputChange}
+                  required
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  disabled={loading}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 rounded-r-lg transition-colors duration-200 min-w-[44px] min-h-[44px] justify-center disabled:cursor-not-allowed"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  )}
+                </button>
+              </div>
+            </div>
 
-						{/* Submit Button */}
-						<button
-							type="submit"
-							disabled={loading}
-							className="w-full bg-gradient-to-r from-blue-600 to-blue-700 dark:to-blue-500 hover:from-blue-700 hover:to-blue-800 dark:hover:to-blue-600 disabled:from-gray-400 disabled:to-gray-500 dark:disabled:to-gray-300 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-						>
-							{loading ? (
-								<>
-									<Loader size={20} />
-									<span>Logging in...</span>
-								</>
-							) : (
-								"Login"
-							)}
-						</button>
-					</form>
-					<div className="flex items-center justify-center gap-4 text-sm text-gray-400 mt-4">
-                        <div className="h-px bg-gray-300 flex-1" />
-                            <span>or continue with</span>
-                        <div className="h-px bg-gray-300 flex-1" />
-                    </div>
+            {/* Forgot Password */}
+            <div className="flex justify-end">
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => setForgotPasswordMode(true)}
+                className="text-sm font-medium text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+              >
+                Forgot Password?
+              </button>
+            </div>
 
-              {/* Google Sign Up/Login */}
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 dark:to-blue-500 hover:from-blue-700 hover:to-blue-800 dark:hover:to-blue-600 disabled:from-gray-400 disabled:to-gray-500 dark:disabled:to-gray-300 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+            >
+              {loading ? (
+                <>
+                  <Loader size={20} />
+                  <span>Logging in...</span>
+                </>
+              ) : (
+                "Login"
+              )}
+            </button>
+          </form>
+          <div className="flex items-center justify-center gap-4 text-sm text-gray-400 mt-4">
+            <div className="h-px bg-gray-300 flex-1" />
+            <span>or continue with</span>
+            <div className="h-px bg-gray-300 flex-1" />
+          </div>
+
+          {/* Google Sign Up/Login */}
           <div className="flex items-center justify-center mt-4">
             <GoogleLogin
               onSuccess={async (credentialResponse) => {
@@ -222,19 +280,81 @@ export default function SignIn() {
           </div>
 
           {/* Footer */}
-					<div className="text-center pt-4 border-t border-gray-100">
-						<p className="text-gray-600 dark:text-gray-400">
-							Don't have an account?{" "}
-							<Link 
-								to="/sign-up" 
-								className="font-semibold text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200"
-							>
-								Register
-							</Link>
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+          <div className="text-center pt-4 border-t border-gray-100">
+            <p className="text-gray-600 dark:text-gray-400">
+              Don't have an account?{" "}
+              <Link
+                to="/sign-up"
+                className="font-semibold text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200"
+              >
+                Register
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Forgot Password Modal */}
+      {forgotPasswordMode && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center px-4 z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Reset Password
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Enter your email address and we'll send you a link to reset your
+              password.
+            </p>
+
+            {/* Email Input */}
+            <div className="mb-6">
+              <label
+                htmlFor="forgotEmail"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Email Address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="forgotEmail"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={forgotPasswordEmail}
+                  onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
+                  disabled={forgotPasswordLoading}
+                />
+              </div>
+            </div>
+
+            {/* Modal Buttons */}
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setForgotPasswordMode(false);
+                  setForgotPasswordEmail("");
+                }}
+                disabled={forgotPasswordLoading}
+                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                disabled={forgotPasswordLoading || !forgotPasswordEmail}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              >
+                {forgotPasswordLoading ? <Loader /> : "Send Reset Link"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

@@ -1,7 +1,12 @@
-import React from 'react';
-import Contactbg from '../../assets/contactUs_bg.jpg';
+import React from "react";
+import Contactbg from "../../assets/contactUs_bg.jpg";
 
 function ContactUs() {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Contact form submitted");
+  };
+
   return (
     <div className="w-full min-h-dvh bg-gray-100 p-4 sm:p-8 flex flex-col lg:flex-row items-center justify-center gap-8">
       {/* Image Section */}
@@ -17,7 +22,9 @@ function ContactUs() {
       <div className="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-semibold">Contact Us</h1>
-          <p className="text-gray-500 text-lg">Give Us Your Valuable Feedback</p>
+          <p className="text-gray-500 text-lg">
+            Give Us Your Valuable Feedback
+          </p>
         </div>
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>

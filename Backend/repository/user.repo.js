@@ -59,6 +59,45 @@ class UserRepository {
     });
     return user;
   };
+
+  // Password reset methods
+  updateResetToken = async (email, resetToken, resetTokenExpiry) => {
+    const user = await prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        resetToken,
+        resetTokenExpiry,
+      },
+    });
+    return user;
+  };
+
+  findUserByResetToken = async (resetToken) => {
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken,
+        resetTokenExpiry: {
+          gt: new Date(),
+        },
+      },
+    });
+    return user;
+  };
+
+  clearResetToken = async (id) => {
+    const user = await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+    });
+    return user;
+  };
 }
 
 export const userRepository = new UserRepository();

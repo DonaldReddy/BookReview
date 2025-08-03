@@ -1,5 +1,7 @@
 import { userRepository } from "../repository/user.repo.js";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
+import { emailService } from "../utils/emailService.js";
 
 class AuthService {
 	constructor() {}
@@ -73,6 +75,47 @@ class AuthService {
 			email: newUser.email,
 			role: newUser.role,
 		};
+	};
+
+	// Password reset methods
+	forgotPassword = async (email) => {
+		const user = await userRepository.findUserByEmail(email);
+		if (!user) {
+			throw new Error("User not found");
+		}
+
+		// Generate reset token
+		const resetToken = crypto.randomBytes(32).toString('hex');
+		const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+
+		// Save reset token to database
+		await userRepository.updateResetToken(email, resetToken, resetTokenExpiry);
+
+		// Try to send reset email
+		try {
+			await emailService.sendPasswordResetEmail(email, resetToken, user.name);
+			return { message: "Password reset email sent successfully" };
+		} catch (emailError) {
+			console.error('Email sending failed:', emailError);
+			// Even if email fails, token is saved, so provide helpful message
+			throw new Error("Email service is not configured properly. Please check email settings. Reset token has been generated but email could not be sent.");
+		}
+	};
+
+	resetPassword = async (token, newPassword) => {
+		const user = await userRepository.findUserByResetToken(token);
+		if (!user) {
+			throw new Error("Invalid or expired reset token");
+		}
+
+		// Hash new password
+		const hashPassword = await bcrypt.hash(newPassword, 10);
+
+		// Update password and clear reset token
+		await userRepository.updateUser(user.id, { password: hashPassword });
+		await userRepository.clearResetToken(user.id);
+
+		return { message: "Password reset successfully" };
 	};
 }
 

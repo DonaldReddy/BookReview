@@ -96,6 +96,45 @@ class AuthController {
 
     res.status(200).send("Sign out successful");
   };
+
+  // Password reset endpoints
+  forgotPassword = async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const result = await authService.forgotPassword(email);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(400).json({
+        message: error.message || "Failed to send password reset email",
+      });
+    }
+  };
+
+  resetPassword = async (req, res) => {
+    try {
+      const { token, password } = req.body;
+
+      if (!token || !password) {
+        return res.status(400).json({ message: "Token and password are required" });
+      }
+
+      if (password.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters long" });
+      }
+
+      const result = await authService.resetPassword(token, password);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(400).json({
+        message: error.message || "Failed to reset password",
+      });
+    }
+  };
 }
 
 export const authController = new AuthController();
