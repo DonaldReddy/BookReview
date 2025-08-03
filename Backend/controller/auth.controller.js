@@ -15,9 +15,9 @@ class AuthController {
 
 			const user = await authService.signIn({ email, password });
 
-			const token = generateToken(user);
+			const jwtToken = generateToken(user);
 
-			res.cookie("token", token, {
+			res.cookie("token", jwtToken, {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === "production",
 				maxAge: 1000 * 60 * 60 * 24,
@@ -49,9 +49,9 @@ class AuthController {
 			if (!user) {
 				return res.status(400).send("User already exists");
 			}
-			const token = generateToken(user);
+			const jwtToken = generateToken(user);
 
-			res.cookie("token", token, {
+			res.cookie("token", jwtToken, {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === "production",
 				maxAge: 1000 * 60 * 60 * 24,
@@ -75,6 +75,15 @@ class AuthController {
 			}
 
 			const response = await authService.googleAuth(token);
+
+			const jwtToken = generateToken(user);
+
+			res.cookie("token", jwtToken, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === "production",
+				maxAge: 1000 * 60 * 60 * 24,
+				sameSite: process.env.NODE_ENV == "production" ? "none" : "lax",
+			});
 
 			res.status(200).json({ user: response });
 		} catch (error) {
