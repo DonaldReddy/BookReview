@@ -117,12 +117,7 @@ class AuthService {
 	resetPassword = async (token, newPassword) => {
 		const user = await userRepository.findUserByResetToken(token);
 		if (!user) {
-			throw new Error("Invalid reset token");
-		}
-
-		// Check if token has expired
-		if (user.resetTokenExpiry < new Date()) {
-			throw new Error("Reset token has expired");
+			throw new Error("Invalid or expired reset token");
 		}
 
 		// Hash new password

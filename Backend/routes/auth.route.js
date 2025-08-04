@@ -11,4 +11,8 @@ authRouter.post("/sign-out", authController.signOut);
 authRouter.post("/forgot-password", authController.forgotPassword);
 authRouter.post("/reset-password", authController.resetPassword);
 
+// Password reset routes
+authRouter.post("/forgot-password", authController.forgotPassword);
+authRouter.post("/reset-password", authController.resetPassword);
+
 export { authRouter };

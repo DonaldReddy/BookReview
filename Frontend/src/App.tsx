@@ -26,22 +26,18 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route index element={<Home />} />
-
       <Route path="sign-in" element={<SignIn />} />
       <Route path="sign-up" element={<SignUp />} />
       <Route path="reset-password" element={<ResetPassword />} />
-
       <Route path="about" element={<AboutUs />} />
       <Route path="app" element={<ProtectedRoute access="USER" />}>
         <Route path="books/:id" element={<Book />} />
         <Route path="books" element={<FindBooks />} />
         <Route path="profile/:id" element={<Profile />} />
       </Route>
-
       <Route path="admin" element={<ProtectedRoute access="ADMIN" />}>
         <Route index element={<AdminHome />} />
       </Route>
-
       <Route path="*" element={<Navigate to="/" />} />
     </Route>
   )

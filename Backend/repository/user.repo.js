@@ -68,6 +68,9 @@ class UserRepository {
 		const user = await prisma.user.findFirst({
 			where: {
 				resetToken,
+				resetTokenExpiry: {
+					gt: new Date(),
+				},
 			},
 		});
 		return user;
