@@ -71,9 +71,9 @@ PORT=5000
 
 DATABASE_URL= # add your postgresql database URL here
 
-AI_KEY= # add your OpenRouter API key here
 
-AI_MODEL= # add your OpenRouter model here (e.g., "gpt-4")
+
+
 
 ### Frontend
 
