@@ -110,7 +110,7 @@ export default function SignIn() {
     setForgotLoading(true);
 
     try {
-      await api.post("/auth/forgot-password", { email: forgotEmail });
+      await api.post("/api/v1/auth/forgot-password", { email: forgotEmail });
       toast.success("Password reset email sent! Please check your inbox.");
       setShowForgotModal(false);
       setForgotEmail("");
