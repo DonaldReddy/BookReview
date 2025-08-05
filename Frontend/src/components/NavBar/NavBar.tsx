@@ -40,9 +40,9 @@ export default function NavBar() {
 
 	return (
 		<div
-			className={`p-2 max-w-screen-2xl z-10 fixed top-0 left-0 right-0 z-100 backdrop-blur-md bg-blue-100/40 dark:bg-black/30 shadow-sm `}
+			className={`p-2 w-full z-10 fixed top-0 left-0 right-0 z-100 backdrop-blur-md bg-blue-100/40 dark:bg-black/30 shadow-sm `}
 		>
-			<div className="max-w-screen-2xl mx-auto h-14 px-4 flex justify-between items-center transition-all duration-300">
+			<div className="w-full h-14 px-4 flex justify-between items-center transition-all duration-300">
 				{/* Logo */}
 				<>
 					<Link to="/" className="flex items-center gap-2 w-1/4 md:w-1/5">
