@@ -16,6 +16,7 @@ BookReview/
 │   ├── routes/             # API route definitions
 │   ├── service/            # Business logic
 │   ├── utils/              # Helper functions
+│   ├── .env.example        # Sample environment variables
 │   ├── index.js            # Entry point for the server
 │   ├── package.json        # Backend dependencies
 │   └── package-lock.json
@@ -83,7 +84,7 @@ EMAIL_FROM= # your_gmail_address@gmail.com (same as EMAIL_USER)
 
 ### Frontend(`frontend/.env`)
 
-VITE_API_BASE_URL=http://localhost:9999
+VITE_API_BASE_URL=http://localhost:5000/api
 VITE_GOOGLE_CLIENT_ID= # your_google_client_id
 VITE_GOOGLE_CLIENT_SECRET= # your_google_client_secret
 
