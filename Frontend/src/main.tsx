@@ -8,15 +8,15 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID; // Replace with your act
 
 const theme = localStorage.getItem("theme");
 if (theme === "dark") {
-	document.documentElement.classList.add("dark");
+    document.documentElement.classList.add("dark");
 } else {
-	document.documentElement.classList.remove("dark");
+    document.documentElement.classList.remove("dark");
 }
 
 createRoot(document.getElementById("root")!).render(
-	<StrictMode>
-		<GoogleOAuthProvider clientId={clientId}>
-			<App />
-		</GoogleOAuthProvider>
-	</StrictMode>,
+    <StrictMode>
+        <GoogleOAuthProvider clientId={clientId}>
+            <App />
+        </GoogleOAuthProvider>
+    </StrictMode>
 );
