@@ -2,7 +2,7 @@ import { OAuth2Client } from "google-auth-library";
 import { userRepository } from "../repository/user.repo.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import { emailService } from "../utils/emailService.js";
+import { emailService } from "./email.service.js";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -108,10 +108,8 @@ class AuthService {
 			throw new Error("Invalid or expired reset token");
 		}
 
-		// Hash new password
 		const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-		// Update password and clear reset token
 		await userRepository.updatePasswordAndClearToken(
 			user.email,
 			hashedPassword,
