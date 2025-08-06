@@ -8,15 +8,18 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  name         String
-  email        String   @unique
-  password     String?
-  googleId     String?
-  profileImage String?
-  role         String   @default("USER")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                    String   @id @default(uuid())
+  name                  String
+  email                 String   @unique
+  password              String?
+  googleId              String?
+  profileImage          String?
+  role                  String   @default("USER")
+  isVerified            Boolean  @default(false)
+  verificationToken     String?
+  verificationExpires   DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
   reviews      Review[]   
 }

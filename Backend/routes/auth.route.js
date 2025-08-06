@@ -8,5 +8,7 @@ authRouter.post("/sign-up", authController.signUp);
 authRouter.post("/google-auth", authController.googleAuth);
 authRouter.post("/google", authController.googleAuth); // optional alias
 authRouter.post("/sign-out", authController.signOut);
+authRouter.post("/verify-email", authController.verifyEmail);
+authRouter.post("/resend-verification", authController.resendVerificationEmail);
 
 export { authRouter };
