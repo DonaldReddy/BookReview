@@ -7,6 +7,7 @@ import { authRouter } from "./routes/auth.route.js";
 import { userRouter } from "./routes/user.route.js";
 import { bookRouter } from "./routes/book.route.js";
 import { reviewRouter } from "./routes/review.route.js";
+import { queryrouter } from "./routes/query.js";
 
 dotenv.config();
 const app = express();
@@ -27,6 +28,8 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/books", bookRouter);
 app.use("/api/v1/reviews", reviewRouter);
+app.use("/api/v1/query", queryrouter);
+
 
 connectToDatabase()
 	.then(() => {
