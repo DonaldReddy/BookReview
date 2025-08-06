@@ -27,7 +27,6 @@ export default function AddNewBook({
 		const { name, value, type } = e.target;
 		if (type === "file" && e.target instanceof HTMLInputElement) {
 			const { files } = e.target;
-			console.log(files);
 			if (files && files.length > 0) {
 				setBookInfo((prev) => ({
 					...prev,

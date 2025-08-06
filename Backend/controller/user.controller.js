@@ -42,7 +42,6 @@ class UserController {
 			const { id } = req.params;
 			const { name, email } = req.body;
 
-			console.log("Update user request:", req.body);
 
 			if (!id) {
 				return res.status(400).send("User ID is required");
