@@ -60,8 +60,7 @@ class AuthService {
 
 		const payload = ticket.getPayload();
 
-
-		const { email, name, picture, sub } = payload;
+		const { email, name, picture: profileImage, sub: googleId } = payload;
 
 		let user = await userRepository.findUserByEmail(email);
 
@@ -69,13 +68,13 @@ class AuthService {
 			user = await userRepository.createNewUser({
 				name,
 				email,
-				profileImage: picture,
-				googleId: sub,
+				profileImage,
+				googleId,
 			});
 		} else {
 			user = await userRepository.updateUser(user.id, {
-				profileImage: picture,
-				googleId: sub,
+				profileImage,
+				googleId,
 			});
 		}
 
@@ -88,29 +87,19 @@ class AuthService {
 		};
 	};
 
-	// Password reset methods
 	forgotPassword = async (email) => {
 		const user = await userRepository.findUserByEmail(email);
 		if (!user) {
 			throw new Error("User not found");
 		}
 
-		// Generate reset token
-		const resetToken = crypto.randomBytes(32).toString('hex');
+		const resetToken = crypto.randomBytes(32).toString("hex");
 		const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
 
-		// Save reset token to database
 		await userRepository.updateResetToken(email, resetToken, resetTokenExpiry);
 
-		// Try to send reset email
-		try {
-			await emailService.sendPasswordResetEmail(email, resetToken, user.name);
-			return { message: "Password reset email sent successfully" };
-		} catch (emailError) {
-			console.error('Email sending failed:', emailError);
-			// Even if email fails, token is saved, so provide helpful message
-			throw new Error("Email service is not configured properly. Please check email settings. Reset token has been generated but email could not be sent.");
-		}
+		await emailService.sendPasswordResetEmail(email, resetToken, user.name);
+		return { message: "Password reset email sent successfully" };
 	};
 
 	resetPassword = async (token, newPassword) => {
@@ -123,7 +112,10 @@ class AuthService {
 		const hashedPassword = await bcrypt.hash(newPassword, 10);
 
 		// Update password and clear reset token
-		await userRepository.updatePasswordAndClearToken(user.email, hashedPassword);
+		await userRepository.updatePasswordAndClearToken(
+			user.email,
+			hashedPassword,
+		);
 
 		return { message: "Password reset successfully" };
 	};

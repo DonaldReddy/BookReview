@@ -50,7 +50,6 @@ class UserRepository {
 		return user;
 	};
 
-	// Password reset methods
 	updateResetToken = async (email, resetToken, resetTokenExpiry) => {
 		const user = await prisma.user.update({
 			where: {
