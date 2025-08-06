@@ -98,3 +98,23 @@ npm run dev
 ```
 
 Backend API will typically run at : http://localhost:5000/api
+
+## 🗃 Database Setup
+
+1. Create a PostgreSQL database for the project (can use pgAdmin or [neon db](https://neon.com/)).
+2. Update the `DATABASE_URL` in the `.env` file with your database connection string.
+3. Run the following command to create the database schema:
+
+```bash
+npx prisma generate
+```
+
+this will generate the Prisma client based on your schema.
+
+4. Run the migration to update the database schema( only if you have made changes to the Prisma schema):
+
+```bash
+npx prisma migrate dev --name migration_name
+```
+
+This will apply the latest schema changes to your database.

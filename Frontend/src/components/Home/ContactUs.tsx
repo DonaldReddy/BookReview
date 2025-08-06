@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { api } from "../../api";
+import { toast } from "react-toastify";
 
 function ContactUs() {
 	const [formData, setFormData] = useState({
@@ -6,57 +8,19 @@ function ContactUs() {
 		email: "",
 		query: "",
 	});
+
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		setFormData({
-			name: "",
-			email: "",
-			query: "",
-		});
-		const formContainer = document.getElementById("formContainer");
-		const originalContent = formContainer?.innerHTML;
 
 		try {
-			const res = await fetch("/api/v1/query", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json", // Required for JSON
-				},
-				body: JSON.stringify(formData),
-			});
-
-			if (!res.ok) {
-				throw new Error("Submission failed");
-			}
-
-			const data = await res.json(); // Or .text() if response is plain text
-
-			if (formContainer) {
-				formContainer.innerHTML = `<p>${
-					data.message || "Submission successful!"
-				}</p>`;
-			}
-
-			// Reset after 3 seconds
-			setTimeout(() => {
-				if (formContainer && originalContent) {
-					formContainer.innerHTML = originalContent;
-				}
-			}, 3000);
+			await api.post("/api/v1/query", formData);
+			toast.success("Message sent successfully!");
 		} catch (error) {
-			if (formContainer) {
-				formContainer.innerHTML = `<p style="color: red;">Error submitting form</p>`;
-			}
-
-			setTimeout(() => {
-				if (formContainer && originalContent) {
-					formContainer.innerHTML = originalContent;
-				}
-			}, 3000);
+			toast.error("Failed to send message. Please try again later.");
 		}
 	};
 
-	const handlechange = (
+	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -76,10 +40,7 @@ function ContactUs() {
 					</p>
 				</div>
 				<div id="formContainer">
-					<form
-						className="flex flex-col gap-4"
-						onSubmit={(e) => handleSubmit(e)}
-					>
+					<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
 						{/* Name */}
 						<div>
 							<label className="block text-lg font-medium">Name</label>
@@ -89,7 +50,7 @@ function ContactUs() {
 								placeholder="Enter your full name"
 								className="w-full border-2 border-gray-300 rounded-md p-2 mt-1 focus:outline-none focus:border-purple-600"
 								value={formData.name}
-								onChange={(e) => handlechange(e)}
+								onChange={handleChange}
 							/>
 						</div>
 
@@ -102,7 +63,7 @@ function ContactUs() {
 								placeholder="Enter your email"
 								className="w-full border-2 border-gray-300 rounded-md p-2 mt-1 focus:outline-none focus:border-purple-600"
 								value={formData.email}
-								onChange={(e) => handlechange(e)}
+								onChange={handleChange}
 							/>
 						</div>
 
@@ -115,7 +76,7 @@ function ContactUs() {
 								placeholder="Type your message here..."
 								value={formData.query}
 								className="w-full border-2 border-gray-300 rounded-md p-2 mt-1 resize-none focus:outline-none focus:border-purple-600"
-								onChange={(e) => handlechange(e)}
+								onChange={handleChange}
 							></textarea>
 						</div>
 
