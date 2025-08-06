@@ -5,7 +5,6 @@ class QueryController {
 		try {
 			const { email, name, query } = req.body;
 
-			console.log("Received query data:", req.body);
 
 			if (!email || !name || !query) {
 				return res.status(400).json({ message: "All fields are required." });

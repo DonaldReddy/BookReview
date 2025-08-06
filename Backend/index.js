@@ -12,7 +12,6 @@ import { queryRouter } from "./routes/query.route.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
-console.log(process.env.FRONTEND_URL);
 
 const corsOptions = {
 	origin: process.env.FRONTEND_URL || "http://localhost:5173",

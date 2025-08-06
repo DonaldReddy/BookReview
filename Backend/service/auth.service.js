@@ -58,7 +58,6 @@ class AuthService {
 
 		const payload = ticket.getPayload();
 
-		console.log("Google Auth Payload:", payload);
 
 		const { email, name, picture, sub } = payload;
 
