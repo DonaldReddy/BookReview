@@ -7,6 +7,7 @@ interface AuthState {
 		name: string;
 		email: string;
 		role: "ADMIN" | "USER";
+		isVerified?: boolean;
 	};
 }
 
@@ -17,6 +18,7 @@ const initialState: AuthState = {
         name: "",
         email: "",
         role: "USER",
+        isVerified: false,
     },
 };
 
@@ -36,6 +38,7 @@ const authSlice = createSlice({
 				name: "",
 				email: "",
 				role: "USER",
+				isVerified: false,
 			};
 		},
 		updateUser: (state, user) => {

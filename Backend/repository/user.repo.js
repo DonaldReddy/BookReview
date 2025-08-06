@@ -26,6 +26,9 @@ class UserRepository {
 		googleId = null,
 		profileImage = null,
 		role = "USER",
+		isVerified = false,
+		emailVerificationToken = null,
+		tokenExpiresAt = null,
 	}) => {
 		const user = await prisma.user.create({
 			data: {
@@ -35,6 +38,9 @@ class UserRepository {
 				googleId,
 				profileImage,
 				role,
+				isVerified,
+				emailVerificationToken,
+				tokenExpiresAt,
 			},
 		});
 		return user;
@@ -46,6 +52,48 @@ class UserRepository {
 				id,
 			},
 			data,
+		});
+		return user;
+	};
+
+	// Find user by verification token
+	findUserByVerificationToken = async (token) => {
+		const user = await prisma.user.findFirst({
+			where: {
+				emailVerificationToken: token,
+				tokenExpiresAt: {
+					gt: new Date(), // Token must not be expired
+				},
+			},
+		});
+		return user;
+	};
+
+	// Update user verification status
+	verifyUserEmail = async (userId) => {
+		const user = await prisma.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				isVerified: true,
+				emailVerificationToken: null,
+				tokenExpiresAt: null,
+			},
+		});
+		return user;
+	};
+
+	// Update user verification token
+	updateVerificationToken = async (userId, token, expiresAt) => {
+		const user = await prisma.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				emailVerificationToken: token,
+				tokenExpiresAt: expiresAt,
+			},
 		});
 		return user;
 	};

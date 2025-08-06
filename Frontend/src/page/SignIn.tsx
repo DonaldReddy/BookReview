@@ -6,6 +6,7 @@ import { authActions } from "../redux/slices/authSlice";
 import React, { useEffect } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import Loader from "../components/Loader";
+import EmailVerificationNotice from "../components/EmailVerificationNotice";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 
@@ -19,6 +20,8 @@ export default function SignIn() {
 	const dispatch = useAppDispatch();
 	const [loading, setLoading] = React.useState(false);
 	const [showPassword, setShowPassword] = React.useState(false);
+	const [showVerificationNotice, setShowVerificationNotice] = React.useState(false);
+	const [unverifiedEmail, setUnverifiedEmail] = React.useState("");
 
 	useEffect(() => {
 		if (isAuthenticated && user) {
@@ -60,15 +63,21 @@ export default function SignIn() {
 					error?.response?.data?.message ||
 					"Sign in failed. Please check your credentials.";
 
-				toast.error(message, {
-					position: "top-right",
-					autoClose: 3000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					theme: "colored",
-				});
+				// Check if the error is about email verification
+				if (message.includes("verify your email") || message.includes("email verification")) {
+					setUnverifiedEmail(userInfo.email);
+					setShowVerificationNotice(true);
+				} else {
+					toast.error(message, {
+						position: "top-right",
+						autoClose: 3000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: true,
+						theme: "colored",
+					});
+				}
 			} else {
 				// Handle unexpected errors
 				toast.error("An unexpected error occurred", {
@@ -251,6 +260,14 @@ export default function SignIn() {
 					</div>
 				</div>
 			</div>
+			
+			{/* Email Verification Notice Modal */}
+			{showVerificationNotice && (
+				<EmailVerificationNotice
+					email={unverifiedEmail}
+					onClose={() => setShowVerificationNotice(false)}
+				/>
+			)}
 		</div>
 	);
 }

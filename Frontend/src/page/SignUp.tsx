@@ -95,8 +95,19 @@ export default function SignUp() {
 				email: userInfo.email,
 				password: userInfo.password,
 			});
-			dispatch(authActions.login(response.data.user));
-			router("/");
+			
+			// Show success message for verification email
+			toast.success(response.data.message || "Account created successfully! Please check your email to verify your account.", {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+			});
+			
+			// Don't automatically log in, redirect to sign-in page instead
+			router("/sign-in");
 		} catch (error: any) {
 			console.error("Sign up error:", error);
 			setError({

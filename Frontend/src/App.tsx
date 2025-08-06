@@ -9,6 +9,7 @@ import Layout from "./Layout";
 import ReduxProvider from "./redux/ReduxProvider";
 import SignIn from "./page/SignIn";
 import SignUp from "./page/SignUp";
+import EmailVerification from "./page/EmailVerification";
 import ProtectedRoute from "./ProtectedRoute";
 import Home from "./page/Home";
 import AdminHome from "./page/Admin/AdminHome";
@@ -28,6 +29,7 @@ const router = createBrowserRouter(
 
 			<Route path="sign-in" element={<SignIn />} />
 			<Route path="sign-up" element={<SignUp />} />
+			<Route path="verify-email" element={<EmailVerification />} />
 
 			<Route path="about" element={<AboutUs />} />
 			<Route path="app" element={<ProtectedRoute access="USER" />}>

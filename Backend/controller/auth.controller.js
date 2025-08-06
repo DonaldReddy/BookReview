@@ -49,16 +49,18 @@ class AuthController {
 			if (!user) {
 				return res.status(400).send("User already exists");
 			}
-			const jwtToken = generateToken(user);
 
-			res.cookie("token", jwtToken, {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === "production",
-				maxAge: 1000 * 60 * 60 * 24,
-				sameSite: process.env.NODE_ENV == "production" ? "none" : "lax",
+			// Don't set JWT token immediately for email signup
+			// User needs to verify email first
+			res.status(201).json({ 
+				message: "Account created successfully. Please check your email to verify your account.",
+				user: {
+					id: user.id,
+					name: user.name,
+					email: user.email,
+					isVerified: user.isVerified
+				}
 			});
-
-			res.status(200).send({ user });
 		} catch (error) {
 			res.status(400).json({
 				message: error.message || "Internal server error",
@@ -74,7 +76,7 @@ class AuthController {
 				return res.status(400).json({ message: "No token provided" });
 			}
 
-			const response = await authService.googleAuth(token);
+			const user = await authService.googleAuth(token);
 
 			const jwtToken = generateToken(user);
 
@@ -85,7 +87,7 @@ class AuthController {
 				sameSite: process.env.NODE_ENV == "production" ? "none" : "lax",
 			});
 
-			res.status(200).json({ user: response });
+			res.status(200).json({ user });
 		} catch (error) {
 			console.error("Google Auth Error:", error);
 			res.status(401).json({ message: "Invalid Google token" });
@@ -96,6 +98,57 @@ class AuthController {
 		res.clearCookie("token");
 
 		res.status(200).send("Sign out successful");
+	};
+
+	// Verify email with token
+	verifyEmail = async (req, res) => {
+		try {
+			const { token } = req.body;
+
+			if (!token) {
+				return res.status(400).json({ message: "Verification token is required" });
+			}
+
+			const user = await authService.verifyEmail(token);
+
+			// Generate JWT token after successful verification
+			const jwtToken = generateToken(user);
+
+			res.cookie("token", jwtToken, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === "production",
+				maxAge: 1000 * 60 * 60 * 24,
+				sameSite: process.env.NODE_ENV == "production" ? "none" : "lax",
+			});
+
+			res.status(200).json({ 
+				message: "Email verified successfully",
+				user 
+			});
+		} catch (error) {
+			res.status(400).json({
+				message: error.message || "Email verification failed",
+			});
+		}
+	};
+
+	// Resend verification email
+	resendVerificationEmail = async (req, res) => {
+		try {
+			const { email } = req.body;
+
+			if (!email) {
+				return res.status(400).json({ message: "Email is required" });
+			}
+
+			const result = await authService.resendVerificationEmail(email);
+
+			res.status(200).json(result);
+		} catch (error) {
+			res.status(400).json({
+				message: error.message || "Failed to resend verification email",
+			});
+		}
 	};
 }
 
