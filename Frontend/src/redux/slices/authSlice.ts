@@ -11,13 +11,13 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-    isAuthenticated: false,
-    user: {
-        id: "",
-        name: "",
-        email: "",
-        role: "USER",
-    },
+	isAuthenticated: false,
+	user: {
+		id: "",
+		name: "",
+		email: "",
+		role: "USER",
+	},
 };
 
 const authSlice = createSlice({
@@ -27,7 +27,6 @@ const authSlice = createSlice({
 		login: (state, action) => {
 			state.isAuthenticated = true;
 			state.user = action.payload;
-			console.log("Login action payload", action.payload);
 		},
 		logout: (state) => {
 			state.isAuthenticated = false;

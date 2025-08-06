@@ -87,42 +87,67 @@ EMAIL_FROM= # your_gmail_address@gmail.com (same as EMAIL_USER)
 VITE_API_BASE_URL=http://localhost:5000/api
 VITE_GOOGLE_CLIENT_ID= # your_google_client_id
 VITE_GOOGLE_CLIENT_SECRET= # your_google_client_secret
+=======
+## 🎨 Frontend Setup
 
-🚀 Getting Started
+```bash
+cd frontend
+```
 
-1. Clone the Repository
-   -> git clone https://github.com/DonaldReddy/BookReview.git
-   -> cd BookReview
+```bash
+copy .env.example .env
+```
 
-2. 🧱 Backend Setup
-   cd backend
+Update the `.env` file with your environment variables (e.g., API URL).
 
-## Install dependencies
-
+```bash
 npm install
+```
 
-## Start the server
-
+```bash
 npm run dev
+```
 
-3. 🎨 Frontend Setup
-   Navigate to the frontend:
-   cd ../frontend
+React app will typically run at : http://localhost:5173/
 
-## Install dependencies:
+## 🛠 Backend Setup
 
+```bash
+cd backend
+```
+
+```bash
+copy .env.example .env
+```
+
+Update the `.env` file with your database connection details and other environment variables.
+
+```bash
 npm install
+```
 
-## Start the development server:
+```bash
+npm run dev
+```
 
-npm start
+Backend API will typically run at : http://localhost:5000/api
 
-React app will typically run at : http://localhost:3000/
+## 🗃 Database Setup
 
-✅ Verifying Setup
+1. Create a PostgreSQL database for the project (can use pgAdmin or [neon db](https://neon.com/)).
+2. Update the `DATABASE_URL` in the `.env` file with your database connection string.
+3. Run the following command to create the database schema:
 
-Frontend: http://localhost:3000
+```bash
+npx prisma generate
+```
 
-Backend API: http://localhost:5000/api
+this will generate the Prisma client based on your schema.
 
-Make sure API routes return valid responses and the frontend connects to the backend.
+4. Run the migration to update the database schema( only if you have made changes to the Prisma schema):
+
+```bash
+npx prisma migrate dev --name migration_name
+```
+
+This will apply the latest schema changes to your database.

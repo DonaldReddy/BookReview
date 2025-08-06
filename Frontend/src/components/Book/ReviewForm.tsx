@@ -83,7 +83,6 @@ export default function ReviewForm({
 							>
 								<FaStar
 									onClick={() => {
-										console.log(reviewInfo.rating == index + 1);
 
 										if (reviewInfo.rating == index + 1) {
 											setReviewInfo({ ...reviewInfo, rating: 1 });

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api } from "../../api";
 import Loader from "../Loader";
+import axios from "axios";
 
 export default function AddNewBook({
 	handleClose,
@@ -26,7 +27,6 @@ export default function AddNewBook({
 		const { name, value, type } = e.target;
 		if (type === "file" && e.target instanceof HTMLInputElement) {
 			const { files } = e.target;
-			console.log(files);
 			if (files && files.length > 0) {
 				setBookInfo((prev) => ({
 					...prev,
@@ -48,15 +48,11 @@ export default function AddNewBook({
 			formData.append("upload_preset", "workelate");
 			formData.append("cloud_name", "depjwhaxa");
 
-			const response = await fetch(
+			const { data } = await axios.post(
 				"https://api.cloudinary.com/v1_1/depjwhaxa/image/upload",
-				{
-					method: "POST",
-					body: formData,
-				},
+				formData,
 			);
 
-			const data = await response.json();
 			return data.secure_url;
 		} catch (error) {
 			return null;

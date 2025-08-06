@@ -61,3 +61,12 @@ enum IsFeatured {
   YES
   NO
 }
+
+model Query {
+  id        String   @id @default(cuid())
+  name     String
+  email    String
+  query     String
+  createdAt DateTime @default(now())
+}
+
