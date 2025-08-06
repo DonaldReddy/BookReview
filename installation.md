@@ -55,65 +55,46 @@ Make sure you have the following installed and ready:
 
 ---
 
-## 🔐 Setting Up Environment Variables
+## 🎨 Frontend Setup
 
-Create .env files in both frontend/ and backend/ directories with the following environment variables.
+```bash
+cd frontend
+```
 
-### Backend(`backend/.env`)
+```bash
+copy .env.example .env
+```
 
-PORT=5000
+Update the `.env` file with your environment variables (e.g., API URL).
 
-FRONTEND_URL=http://localhost:5173
-
-JWT_SECRET= # add your JWT secret here
-
-PORT=5000
-
-DATABASE_URL= # add your postgresql database URL here
-
-
-
-
-
-### Frontend
-
-VITE_API_BASE_URL=http://localhost:5000/api
-
-🚀 Getting Started
-
-1. Clone the Repository
-   -> git clone https://github.com/DonaldReddy/BookReview.git
-   -> cd BookReview
-
-2. 🧱 Backend Setup
-   cd backend
-
-## Install dependencies
-
+```bash
 npm install
+```
 
-## Start the server
-
+```bash
 npm run dev
+```
 
-3. 🎨 Frontend Setup
-   Navigate to the frontend:
-   cd ../frontend
+React app will typically run at : http://localhost:5173/
 
-## Install dependencies:
+## 🛠 Backend Setup
 
+```bash
+cd backend
+```
+
+```bash
+copy .env.example .env
+```
+
+Update the `.env` file with your database connection details and other environment variables.
+
+```bash
 npm install
+```
 
-## Start the development server:
+```bash
+npm run dev
+```
 
-npm start
-
-React app will typically run at : http://localhost:3000/
-
-✅ Verifying Setup
-
-Frontend: http://localhost:3000
-
-Backend API: http://localhost:5000/api
-
-Make sure API routes return valid responses and the frontend connects to the backend.
+Backend API will typically run at : http://localhost:5000/api
