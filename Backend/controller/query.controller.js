@@ -3,14 +3,16 @@ import prisma from "../database/dbConnect.js";
 class QueryController {
 	async createQuery(req, res) {
 		try {
-			const { username, email, query } = req.body;
+			const { email, name, query } = req.body;
 
-			if (!username || !email || !query) {
+			console.log("Received query data:", req.body);
+
+			if (!email || !name || !query) {
 				return res.status(400).json({ message: "All fields are required." });
 			}
 
 			const newQuery = await prisma.query.create({
-				data: { username, email, query },
+				data: { email, name, query },
 			});
 
 			res.status(201).json({

@@ -62,8 +62,8 @@ enum IsFeatured {
 
 model Query {
   id        String   @id @default(cuid())
-  username  String
-  email     String
+  name     String
+  email    String
   query     String
   createdAt DateTime @default(now())
 }

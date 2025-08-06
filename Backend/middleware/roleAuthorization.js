@@ -11,7 +11,7 @@ export async function isAdmin(req, res, next) {
 export async function isUser(req, res, next) {
 	const { role } = req.user;
 
-	if (role === "USER") {
+	if (role === "USER" || role === "ADMIN") {
 		next();
 	} else {
 		res.status(403).send("Access denied.");
