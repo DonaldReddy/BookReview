@@ -59,35 +59,6 @@ Make sure you have the following installed and ready:
 
 Create .env files in both frontend/ and backend/ directories with the following environment variables.
 
-### Backend(`backend/.env`)
-
-FRONTEND_URL=http://localhost:5173
-
-JWT_SECRET= # add your JWT secret here
-
-PORT=5000
-
-DATABASE_URL= # add your postgresql database URL here
-GOOGLE_CLIENT_ID= # your_google_client_id
-GOOGLE_CLIENT_SECRET= # your_google_client_secret
-
-AI_KEY= # add your OpenRouter API key here
-AI_MODEL= # add your OpenRouter model here (e.g., "gpt-3.5-turbo")
-
-# Email Configuration (for password reset)
-
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER= # your_gmail_address@gmail.com
-EMAIL_PASS= # your_16_character_gmail_app_password
-EMAIL_FROM= # your_gmail_address@gmail.com (same as EMAIL_USER)
-
-### Frontend(`frontend/.env`)
-
-VITE_API_BASE_URL=http://localhost:5000/api
-VITE_GOOGLE_CLIENT_ID= # your_google_client_id
-VITE_GOOGLE_CLIENT_SECRET= # your_google_client_secret
-=======
 ## 🎨 Frontend Setup
 
 ```bash
