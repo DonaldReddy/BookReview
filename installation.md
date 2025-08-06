@@ -55,6 +55,10 @@ Make sure you have the following installed and ready:
 
 ---
 
+## 🔐 Setting Up Environment Variables
+
+Create .env files in both frontend/ and backend/ directories with the following environment variables.
+
 ## 🎨 Frontend Setup
 
 ```bash

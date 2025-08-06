@@ -14,8 +14,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const corsOptions = {
-	origin: process.env.FRONTEND_URL || "http://localhost:5173",
-	credentials: true,
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    credentials: true,
 };
 
 app.use(cors(corsOptions));
@@ -30,12 +30,12 @@ app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/query", queryRouter);
 
 connectToDatabase()
-	.then(() => {
-		console.log("Database operations can proceed.");
-		app.listen(PORT, () => {
-			console.log(`Server is running on port ${PORT}`);
-		});
-	})
-	.catch((error) => {
-		console.error("Error during database operations", error);
-	});
+    .then(() => {
+        console.log("Database operations can proceed.");
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error("Error during database operations", error);
+    });
