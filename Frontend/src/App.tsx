@@ -1,9 +1,9 @@
 import {
-	createBrowserRouter,
-	RouterProvider,
-	Route,
-	createRoutesFromElements,
-	Navigate,
+    createBrowserRouter,
+    RouterProvider,
+    Route,
+    createRoutesFromElements,
+    Navigate,
 } from "react-router-dom";
 import Layout from "./Layout";
 import ReduxProvider from "./redux/ReduxProvider";
@@ -22,44 +22,44 @@ import { useEffect } from "react";
 import { useAppSelector } from "./redux/store";
 
 const router = createBrowserRouter(
-	createRoutesFromElements(
-		<Route path="/" element={<Layout />}>
-			<Route index element={<Home />} />
-			<Route path="sign-in" element={<SignIn />} />
-			<Route path="sign-up" element={<SignUp />} />
-			<Route path="reset-password" element={<ResetPassword />} />
-			<Route path="about" element={<AboutUs />} />
+    createRoutesFromElements(
+        <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="sign-in" element={<SignIn />} />
+            <Route path="sign-up" element={<SignUp />} />
+            <Route path="reset-password" element={<ResetPassword />} />
+            <Route path="about" element={<AboutUs />} />
 
-			<Route path="app" element={<ProtectedRoute access="USER" />}>
-				<Route path="books/:id" element={<Book />} />
-				<Route path="books" element={<FindBooks />} />
-				<Route path="profile/:id" element={<Profile />} />
-			</Route>
+            <Route path="app" element={<ProtectedRoute access="USER" />}>
+                <Route path="books/:id" element={<Book />} />
+                <Route path="books" element={<FindBooks />} />
+                <Route path="profile/:id" element={<Profile />} />
+            </Route>
 
-			<Route path="admin" element={<ProtectedRoute access="ADMIN" />}>
-				<Route index element={<AdminHome />} />
-			</Route>
-			<Route path="*" element={<Navigate to="/" />} />
-		</Route>,
-	),
+            <Route path="admin" element={<ProtectedRoute access="ADMIN" />}>
+                <Route index element={<AdminHome />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" />} />
+        </Route>
+    )
 );
 
 function InnerApp() {
-	const theme = useAppSelector((state) => state.general.theme);
+    const theme = useAppSelector((state) => state.general.theme);
 
-	useEffect(() => {
-		document.documentElement.classList.toggle("dark", theme === "dark");
-	}, [theme]);
+    useEffect(() => {
+        document.documentElement.classList.toggle("dark", theme === "dark");
+    }, [theme]);
 
-	return <RouterProvider router={router} />;
+    return <RouterProvider router={router} />;
 }
 
 function App() {
-	return (
-		<ReduxProvider>
-			<InnerApp />
-		</ReduxProvider>
-	);
+    return (
+        <ReduxProvider>
+            <InnerApp />
+        </ReduxProvider>
+    );
 }
 
 export default App;
