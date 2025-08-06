@@ -1,5 +1,5 @@
 export function passwordResetEmailTemplate(userName, resetUrl) {
-	return `
+    return `
         <!DOCTYPE html>
         <html>
         <head>
