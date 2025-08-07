@@ -66,14 +66,14 @@ export default function BookCard({
 					title={`Rated ${rating} out of 5`}
 					className="flex items-center gap-1"
 				>
-					{Array(rating)
+					{Array(Math.floor(rating))
 						.fill(null)
 						.map((_, index) => (
 							<span key={index} className="text-sm text-[#de7921]">
 								<FaStar />
 							</span>
 						))}
-					{Array(5 - rating)
+					{Array(5 - Math.floor(rating))
 						.fill(null)
 						.map((_, index) => (
 							<span key={index} className="text-sm text-gray-500">

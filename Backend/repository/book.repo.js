@@ -145,7 +145,7 @@ export class BookRepository {
 				id: bookId,
 			},
 			data: {
-				rating: parseFloat(aggregateRating.toFixed(1)),
+				rating: Math.floor(aggregateRating),
 				ratingCount: bookCount,
 			},
 		});

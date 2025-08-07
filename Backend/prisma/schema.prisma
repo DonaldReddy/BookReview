@@ -22,7 +22,7 @@ model Book {
   id          String   @id @default(cuid())
   title       String
   author      String
-  rating      Float    @default(0)
+  rating      Int      @default(0)
   ratingCount Int      @default(0)
   featured    IsFeatured @default(NO)
   genre       String[] @default([])

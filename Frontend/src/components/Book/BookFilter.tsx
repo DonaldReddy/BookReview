@@ -57,7 +57,6 @@ export default function BookFilter() {
 					</label>
 					<select
 						name="sortby"
-						defaultValue=""
 						className="rounded-lg p-2 ml-2 outline-none"
 						value={sortBy}
 						onChange={(e) => setSortBy(e.target.value)}
@@ -77,8 +76,7 @@ export default function BookFilter() {
 						<FaFilter />
 					</label>
 					<select
-						name="sortby"
-						defaultValue=""
+						name="filter"
 						className="rounded-lg p-2 ml-2 outline-none"
 						value={filter}
 						onChange={(e) => setFilter(e.target.value)}
