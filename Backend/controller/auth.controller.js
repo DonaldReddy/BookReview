@@ -51,6 +51,7 @@ class AuthController {
             }
 
             // Don't sign them in automatically, they need to verify email first
+            
             res.status(201).json({ 
                 message: "Account created successfully! Please check your email to verify your account.",
                 user: {

@@ -1,13 +1,12 @@
 import { OAuth2Client } from "google-auth-library";
 import { userRepository } from "../repository/user.repo.js";
-import { emailService } from "../utils/emailService.js";
-import { 
-	generateVerificationToken, 
-	getEmailVerificationExpiry,
-	verifyToken 
+import { emailService } from "./email.service.js";
+import {
+    generateVerificationToken,
+    getEmailVerificationExpiry,
+    getPasswordResetExpiry,
 } from "../utils/tokenUtils.js";
 import bcrypt from "bcrypt";
-import crypto from "crypto";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -44,7 +43,7 @@ class AuthService {
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
-        
+
         // Generate verification token
         const verificationToken = generateVerificationToken();
         const verificationExpires = getEmailVerificationExpiry();
@@ -64,9 +63,15 @@ class AuthService {
 
         // Send verification email
         try {
-            const emailResult = await emailService.sendVerificationEmail(email, name, verificationToken);
+            const emailResult = await emailService.sendVerificationEmail(
+                email,
+                name,
+                verificationToken
+            );
             if (!emailResult.success) {
-                console.log('📧 Email service not configured. User can verify manually.');
+                console.log(
+                    "📧 Email service not configured. User can verify manually."
+                );
             }
         } catch (error) {
             console.error("Failed to send verification email:", error);
@@ -121,20 +126,30 @@ class AuthService {
     };
 
     verifyEmail = async (token) => {
-        console.log('Looking for user with verification token:', token.substring(0, 16) + '...'); // Debug log
-        
+        console.log(
+            "Looking for user with verification token:",
+            token.substring(0, 16) + "..."
+        ); // Debug log
+
         const user = await userRepository.findUserByVerificationToken(token);
-        
+
         if (!user) {
-            console.log('No user found with verification token'); // Debug log
+            console.log("No user found with verification token"); // Debug log
             throw new Error("Invalid or expired verification token");
         }
 
-        console.log('Found user:', user.email, 'isVerified:', user.isVerified, 'tokenExpires:', user.verificationExpires); // Debug log
+        console.log(
+            "Found user:",
+            user.email,
+            "isVerified:",
+            user.isVerified,
+            "tokenExpires:",
+            user.verificationExpires
+        ); // Debug log
 
         // If user is already verified, return success
         if (user.isVerified) {
-            console.log('User is already verified:', user.email); // Debug log
+            console.log("User is already verified:", user.email); // Debug log
             return {
                 id: user.id,
                 name: user.name,
@@ -146,15 +161,22 @@ class AuthService {
 
         // Check if token has expired
         if (user.verificationExpires && new Date() > user.verificationExpires) {
-            console.log('Verification token has expired for user:', user.email); // Debug log
-            throw new Error("Verification token has expired. Please request a new verification email.");
+            console.log("Verification token has expired for user:", user.email); // Debug log
+            throw new Error(
+                "Verification token has expired. Please request a new verification email."
+            );
         }
 
         // Verify the user
         const verifiedUser = await userRepository.verifyUserEmail(user.id);
-        
-        console.log('User verification completed:', verifiedUser.email, 'isVerified:', verifiedUser.isVerified); // Debug log
-        
+
+        console.log(
+            "User verification completed:",
+            verifiedUser.email,
+            "isVerified:",
+            verifiedUser.isVerified
+        ); // Debug log
+
         return {
             id: verifiedUser.id,
             name: verifiedUser.name,
@@ -178,10 +200,18 @@ class AuthService {
         const verificationToken = generateVerificationToken();
         const verificationExpires = getEmailVerificationExpiry();
 
-        await userRepository.updateVerificationToken(user.id, verificationToken, verificationExpires);
+        await userRepository.updateVerificationToken(
+            user.id,
+            verificationToken,
+            verificationExpires
+        );
 
         // Send new verification email
-        await emailService.sendVerificationEmail(user.email, user.name, verificationToken);
+        await emailService.sendVerificationEmail(
+            user.email,
+            user.name,
+            verificationToken
+        );
 
         return { message: "Verification email sent successfully" };
     };
@@ -192,8 +222,8 @@ class AuthService {
             throw new Error("User not found");
         }
 
-        const resetToken = crypto.randomBytes(32).toString("hex");
-        const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+        const resetToken = generateVerificationToken();
+        const resetTokenExpiry = getPasswordResetExpiry(); // 1 hour from now
 
         await userRepository.updateResetToken(
             email,
@@ -201,7 +231,7 @@ class AuthService {
             resetTokenExpiry
         );
 
-        await emailService.sendPasswordResetEmail(email, resetToken, user.name);
+        await emailService.sendPasswordResetEmail(email, user.name, resetToken);
         return { message: "Password reset email sent successfully" };
     };
 

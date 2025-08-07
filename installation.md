@@ -45,13 +45,13 @@ BookReview/
 
 Make sure you have the following installed and ready:
 
-- **Node.js** v16 or later (includes `npm`; you can also use **yarn**)
-- **Git**
-- **PostgreSQL** (for the backend database)
-- Optionally:
-- **nodemon** (auto-restarts backend server in dev)
-- **concurrently** (to run frontend & backend together)
-- **Postman** or **Insomnia** for API testing
+-   **Node.js** v16 or later (includes `npm`; you can also use **yarn**)
+-   **Git**
+-   **PostgreSQL** (for the backend database)
+-   Optionally:
+-   **nodemon** (auto-restarts backend server in dev)
+-   **concurrently** (to run frontend & backend together)
+-   **Postman** or **Insomnia** for API testing
 
 ---
 
@@ -101,7 +101,7 @@ npm install
 npm run dev
 ```
 
-Backend API will typically run at : http://localhost:5000/api
+Backend API will typically run at : http://localhost:9999/api
 
 ## 🗃 Database Setup
 
