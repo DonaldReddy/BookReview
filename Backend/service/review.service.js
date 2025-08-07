@@ -27,8 +27,10 @@ export class ReviewService {
 
 	refineReview = async ({ comment, bookTitle, bookAuthor }) => {
 		try {
+			console.log('Sending request to AI for review refinement');
+
 			const response = await fetch(
-				"https://openrouter.ai/api/v1/chat/completions",
+				"https://api.mistral.ai/v1/chat/completions",
 				{
 					method: "POST",
 					headers: {
@@ -36,20 +38,20 @@ export class ReviewService {
 						"Content-Type": "application/json",
 					},
 					body: JSON.stringify({
-						model: "nvidia/llama-3.1-nemotron-nano-8b-v1:free",
+						model: "mistral-small",
 						messages: [
 							{
 								role: "user",
 								content: `You are an expert editor. Your task is to refine the following book review for the book titled "${bookTitle}" by ${bookAuthor}:
-										- Expand the review slightly by approximately 10% to enrich its details or descriptions.
-										- Keep the total word count at or below 100 words.
-										- Maintain the original tone, meaning, and sentiment.
-										- Ensure excellent grammar, natural flow, and readability.
-										- Do not introduce any new facts or opinions not present in the original comment.
-										- Only return the refined review, wrapped with a single '#' character at the beginning and end.
+											- Expand the review slightly by approximately 10% to enrich its details or descriptions.
+											- Keep the total word count at or below 100 words.
+											- Maintain the original tone, meaning, and sentiment.
+											- Ensure excellent grammar, natural flow, and readability.
+											- Do not introduce any new facts or opinions not present in the original comment.
+											- Only return the refined review.
 
-										Here is the review:
-										${comment}`,
+											Here is the review:
+											${comment}`,
 							},
 						],
 					}),
@@ -58,18 +60,24 @@ export class ReviewService {
 
 			if (!response.ok) {
 				const error = await response.text();
+				console.error('API Error:', error);
 				throw new Error(`OpenRouter API Error: ${error}`);
 			}
 
 			const data = await response.json();
 			const refined = data?.choices?.[0]?.message?.content;
 
-			if (!refined) throw new Error("Invalid response from AI");
+			if (!refined) {
+				console.error('No content received from AI');
+				throw new Error("Invalid response from AI");
+			}
 
-			// // Extract content between ##
-			const match = refined.match(/#([\s\S]*?)#/);
+			const cleanRefined = refined.trim().replace(/^["']|["']$/g, "");
 
-			return match ? match[1].trim() : refined.trim();
+			// Log the AI response for debugging
+			console.log('AI Response:', cleanRefined);
+
+			return cleanRefined;
 		} catch (error) {
 			console.error("Review refinement failed:", error);
 			return comment; // fallback to original review
