@@ -1,8 +1,6 @@
 import { Router } from "express";
-import { ReviewController } from "../controller/review.controller.js";
+import { reviewController } from "../controller/review.controller.js";
 import { jwtAuthentication } from "../middleware/jwtAuthentication.js";
-
-const reviewController = new ReviewController();
 
 const reviewRouter = Router();
 

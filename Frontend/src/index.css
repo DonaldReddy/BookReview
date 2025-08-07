@@ -1,8 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Pacifico:wght@100..400&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     --primary-color: #000000;
     --secondary-color: #b1b0b3;
     --tertiary-color: #433bff;
@@ -16,8 +20,11 @@
     animation: animation 3s ease infinite;
 }
 
-@keyframes animation {
+.font-pacifico {
+    font-family: "Pacifico", cursive;
+}
 
+@keyframes animation {
     0%,
     100% {
         background-position: 0% 50%;

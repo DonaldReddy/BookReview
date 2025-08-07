@@ -1,9 +1,7 @@
 import { Router } from "express";
 import { isAdmin } from "../middleware/roleAuthorization.js";
-import { BookController } from "../controller/book.controller.js";
+import { bookController } from "../controller/book.controller.js";
 import { jwtAuthentication } from "../middleware/jwtAuthentication.js";
-
-const bookController = new BookController();
 
 const bookRouter = Router();
 
