@@ -138,3 +138,6 @@ Backend API will typically run at : http://localhost:9999/api
    - After changing to admin role, you can access the admin panel to add books
 
 **Note:** Make sure to backup your database before running migrations, especially when making schema changes.
+
+## AI key
+>> AI key is required for the AI features to work. You can get it from https://console.mistral.ai/ and then click on create API key. Copy the API key and paste it in the .env file in the backend directory.
