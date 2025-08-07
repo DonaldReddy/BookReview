@@ -23,8 +23,10 @@ export default function SignIn() {
     const dispatch = useAppDispatch();
     const [loading, setLoading] = React.useState(false);
     const [showPassword, setShowPassword] = React.useState(false);
-    const [verificationError, setVerificationError] = React.useState<LoginError | null>(null);
-    const [resendingVerification, setResendingVerification] = React.useState(false);
+    const [verificationError, setVerificationError] =
+        React.useState<LoginError | null>(null);
+    const [resendingVerification, setResendingVerification] =
+        React.useState(false);
 
     useEffect(() => {
         if (isAuthenticated && user) {
@@ -64,13 +66,18 @@ export default function SignIn() {
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
                 const errorData = error?.response?.data;
-                const message = errorData?.message || "Sign in failed. Please check your credentials.";
+                const message =
+                    errorData?.message ||
+                    "Sign in failed. Please check your credentials.";
 
                 // Check if error is due to email verification
-                if (errorData?.requiresVerification || message.includes("verify your email")) {
+                if (
+                    errorData?.requiresVerification ||
+                    message.includes("verify your email")
+                ) {
                     setVerificationError({
                         message,
-                        requiresVerification: true
+                        requiresVerification: true,
                     });
                 } else {
                     toast.error(message, {
@@ -107,15 +114,19 @@ export default function SignIn() {
     const handleResendVerification = async () => {
         setResendingVerification(true);
         try {
-            const response = await api.post("/api/v1/auth/resend-verification", {
-                email: userInfo.email,
-            });
+            const response = await api.post(
+                "/api/v1/auth/resend-verification",
+                {
+                    email: userInfo.email,
+                }
+            );
             toast.success(response.data.message || "Verification email sent!");
             setVerificationError(null);
         } catch (error: any) {
             console.error("Resend verification error:", error);
             toast.error(
-                error.response?.data?.message || "Failed to resend verification email",
+                error.response?.data?.message ||
+                    "Failed to resend verification email"
             );
         } finally {
             setResendingVerification(false);
@@ -247,43 +258,49 @@ export default function SignIn() {
                         </div>
 
                         {/* Email Verification Error */}
-                        {verificationError && verificationError.requiresVerification && (
-                            <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg space-y-3">
-                                <div className="flex items-start space-x-3">
-                                    <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
-                                    <div className="flex-1">
-                                        <h4 className="text-sm font-semibold text-yellow-800 dark:text-yellow-200">
-                                            Email Verification Required
-                                        </h4>
-                                        <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-                                            {verificationError.message}
-                                        </p>
+                        {verificationError &&
+                            verificationError.requiresVerification && (
+                                <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg space-y-3">
+                                    <div className="flex items-start space-x-3">
+                                        <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+                                        <div className="flex-1">
+                                            <h4 className="text-sm font-semibold text-yellow-800 dark:text-yellow-200">
+                                                Email Verification Required
+                                            </h4>
+                                            <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                                                {verificationError.message}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex space-x-3">
+                                        <button
+                                            onClick={handleResendVerification}
+                                            disabled={
+                                                resendingVerification ||
+                                                !userInfo.email
+                                            }
+                                            className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-yellow-400 text-white text-sm font-medium rounded-md transition-colors duration-200 flex items-center gap-2"
+                                        >
+                                            {resendingVerification ? (
+                                                <>
+                                                    <Loader />
+                                                    Sending...
+                                                </>
+                                            ) : (
+                                                "Resend Verification Email"
+                                            )}
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                setVerificationError(null)
+                                            }
+                                            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md transition-colors duration-200"
+                                        >
+                                            Dismiss
+                                        </button>
                                     </div>
                                 </div>
-                                <div className="flex space-x-3">
-                                    <button
-                                        onClick={handleResendVerification}
-                                        disabled={resendingVerification || !userInfo.email}
-                                        className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-yellow-400 text-white text-sm font-medium rounded-md transition-colors duration-200 flex items-center gap-2"
-                                    >
-                                        {resendingVerification ? (
-                                            <>
-                                                <Loader />
-                                                Sending...
-                                            </>
-                                        ) : (
-                                            "Resend Verification Email"
-                                        )}
-                                    </button>
-                                    <button
-                                        onClick={() => setVerificationError(null)}
-                                        className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md transition-colors duration-200"
-                                    >
-                                        Dismiss
-                                    </button>
-                                </div>
-                            </div>
-                        )}
+                            )}
 
                         {/* Forgot Password */}
                         <div className="flex justify-end">

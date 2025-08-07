@@ -14,21 +14,26 @@ export default function ProtectedRoute({
 }) {
     const { isAuthenticated, user } = useAppSelector((state) => state.auth);
     const isClient = useClient();
-    const [resendingVerification, setResendingVerification] = React.useState(false);
+    const [resendingVerification, setResendingVerification] =
+        React.useState(false);
 
     const handleResendVerification = async () => {
         if (!user?.email) return;
-        
+
         setResendingVerification(true);
         try {
-            const response = await api.post('/api/v1/auth/resend-verification', {
-                email: user.email,
-            });
-            toast.success(response.data.message || 'Verification email sent!');
+            const response = await api.post(
+                "/api/v1/auth/resend-verification",
+                {
+                    email: user.email,
+                }
+            );
+            toast.success(response.data.message || "Verification email sent!");
         } catch (error: any) {
-            console.error('Resend verification error:', error);
+            console.error("Resend verification error:", error);
             toast.error(
-                error.response?.data?.message || 'Failed to resend verification email',
+                error.response?.data?.message ||
+                    "Failed to resend verification email"
             );
         } finally {
             setResendingVerification(false);
@@ -54,13 +59,15 @@ export default function ProtectedRoute({
                                     Email Verification Required
                                 </h1>
                                 <p className="text-gray-600 dark:text-gray-300">
-                                    Please verify your email address to access this page.
+                                    Please verify your email address to access
+                                    this page.
                                 </p>
                                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    Check your inbox for a verification email sent to <strong>{user.email}</strong>
+                                    Check your inbox for a verification email
+                                    sent to <strong>{user.email}</strong>
                                 </p>
                             </div>
-                            
+
                             <div className="space-y-4">
                                 <button
                                     onClick={handleResendVerification}
@@ -76,7 +83,7 @@ export default function ProtectedRoute({
                                         "Resend Verification Email"
                                     )}
                                 </button>
-                                
+
                                 <Link
                                     to="/sign-in"
                                     className="block w-full text-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
@@ -84,9 +91,10 @@ export default function ProtectedRoute({
                                     Back to Sign In
                                 </Link>
                             </div>
-                            
+
                             <p className="text-xs text-gray-500 dark:text-gray-400">
-                                Didn't receive the email? Check your spam folder or try resending.
+                                Didn't receive the email? Check your spam folder
+                                or try resending.
                             </p>
                         </div>
                     </div>

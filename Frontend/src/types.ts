@@ -12,31 +12,31 @@ export type Book = {
 };
 
 export type User = {
-	id: string;
-	name: string;
-	email: string;
-	role: string;
-	isVerified: boolean;
-	profileImage?: string;
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    isVerified: boolean;
+    profileImage?: string;
 };
 
 export type AuthResponse = {
-	user?: User;
-	message?: string;
-	requiresVerification?: boolean;
+    user?: User;
+    message?: string;
+    requiresVerification?: boolean;
 };
 
 export type SignupResponse = {
-	message: string;
-	user: {
-		id: string;
-		name: string;
-		email: string;
-		isVerified: boolean;
-	};
+    message: string;
+    user: {
+        id: string;
+        name: string;
+        email: string;
+        isVerified: boolean;
+    };
 };
 
 export type LoginError = {
-	message: string;
-	requiresVerification?: boolean;
+    message: string;
+    requiresVerification?: boolean;
 };

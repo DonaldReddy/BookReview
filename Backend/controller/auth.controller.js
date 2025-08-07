@@ -1,4 +1,3 @@
-import { OAuth2Client } from "google-auth-library";
 import { authService } from "../service/auth.service.js";
 import { generateToken } from "../utils/jwt.js";
 
@@ -51,15 +50,16 @@ class AuthController {
             }
 
             // Don't sign them in automatically, they need to verify email first
-            
-            res.status(201).json({ 
-                message: "Account created successfully! Please check your email to verify your account.",
+
+            res.status(201).json({
+                message:
+                    "Account created successfully! Please check your email to verify your account.",
                 user: {
                     id: user.id,
                     name: user.name,
                     email: user.email,
-                    isVerified: user.isVerified
-                }
+                    isVerified: user.isVerified,
+                },
             });
         } catch (error) {
             res.status(400).json({
@@ -103,25 +103,27 @@ class AuthController {
         try {
             const { token } = req.body;
 
-            console.log('Email verification request received:', {
-                token: token ? token.substring(0, 16) + '...' : 'undefined',
-                hasToken: !!token
+            console.log("Email verification request received:", {
+                token: token ? token.substring(0, 16) + "..." : "undefined",
+                hasToken: !!token,
             }); // Debug log
 
             if (!token) {
-                return res.status(400).json({ message: "Verification token is required" });
+                return res
+                    .status(400)
+                    .json({ message: "Verification token is required" });
             }
 
             const user = await authService.verifyEmail(token);
 
-            console.log('Email verification successful for user:', user.email); // Debug log
+            console.log("Email verification successful for user:", user.email); // Debug log
 
             res.status(200).json({
                 message: "Email verified successfully! You can now sign in.",
-                user
+                user,
             });
         } catch (error) {
-            console.error('Email verification error:', error.message); // Debug log
+            console.error("Email verification error:", error.message); // Debug log
             res.status(400).json({
                 message: error.message || "Email verification failed",
             });
@@ -174,11 +176,9 @@ class AuthController {
             }
 
             if (password.length < 6) {
-                return res
-                    .status(400)
-                    .json({
-                        message: "Password must be at least 6 characters long",
-                    });
+                return res.status(400).json({
+                    message: "Password must be at least 6 characters long",
+                });
             }
 
             const result = await authService.resetPassword(token, password);
