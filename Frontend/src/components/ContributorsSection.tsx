@@ -6,6 +6,7 @@ type Contributor = {
     login: string;
     avatar_url: string;
     html_url: string;
+    contributions: number;
 };
 
 const CONTRIBUTORS_PER_PAGE = 6;
@@ -62,16 +63,10 @@ const ContributorsSection: React.FC = () => {
     return (
         <section className="bg-gray-100 dark:bg-gray-900 py-10 px-4 md:px-6">
             {/* ✅ External Container */}
-            <div
-                className="max-w-5xl mx-auto text-center rounded-2xl p-6 shadow-lg 
-                      bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm 
-                      border border-gray-300 dark:border-gray-700 
-                      transition-all duration-500 hover:shadow-2xl hover:border-blue-400"
-            >
+            <div className="max-w-5xl mx-auto text-center rounded-2xl p-6 shadow-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-300 dark:border-gray-700 transition-all duration-500 hover:shadow-2xl hover:border-blue-400">
                 {/* ✅ Animated Heading with Reduced Size */}
                 <motion.h2
-                    className="text-2xl md:text-3xl font-bold mb-6 tracking-tight flex justify-center gap-1 flex-wrap 
-                          transition-all duration-300"
+                    className="text-2xl md:text-3xl font-bold mb-6 tracking-tight flex justify-center gap-1 flex-wrap transition-all duration-300"
                     initial="hidden"
                     animate="visible"
                 >
@@ -80,8 +75,7 @@ const ContributorsSection: React.FC = () => {
                             key={index}
                             variants={letterVariant}
                             custom={index}
-                            className="transition-colors duration-300 hover:text-blue-500 
-                         text-gray-900 dark:text-white cursor-pointer"
+                            className="transition-colors duration-300 hover:text-blue-500 text-gray-900 dark:text-white cursor-pointer"
                             whileHover={{
                                 scale: 1.1,
                                 textShadow:
@@ -115,7 +109,7 @@ const ContributorsSection: React.FC = () => {
                                 {contributor.login}
                             </h3>
                             <p className="text-xs text-gray-500 dark:text-gray-300">
-                                GitHub Contributor
+                                ✨ {contributor.contributions} Contributions
                             </p>
                         </div>
                     ))}
