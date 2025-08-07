@@ -4,10 +4,11 @@ import { api } from "../api";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { authActions } from "../redux/slices/authSlice";
 import React, { useEffect } from "react";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { LoginError } from "../types";
 
 export default function SignIn() {
     const [userInfo, setUserInfo] = React.useState({
@@ -22,6 +23,8 @@ export default function SignIn() {
     const dispatch = useAppDispatch();
     const [loading, setLoading] = React.useState(false);
     const [showPassword, setShowPassword] = React.useState(false);
+    const [verificationError, setVerificationError] = React.useState<LoginError | null>(null);
+    const [resendingVerification, setResendingVerification] = React.useState(false);
 
     useEffect(() => {
         if (isAuthenticated && user) {
@@ -44,6 +47,7 @@ export default function SignIn() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
+        setVerificationError(null);
         try {
             const response = await api.post("/api/v1/auth/sign-in", userInfo);
             dispatch(authActions.login(response.data.user));
@@ -59,19 +63,26 @@ export default function SignIn() {
             router("/");
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
-                const message =
-                    error?.response?.data?.message ||
-                    "Sign in failed. Please check your credentials.";
+                const errorData = error?.response?.data;
+                const message = errorData?.message || "Sign in failed. Please check your credentials.";
 
-                toast.error(message, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "colored",
-                });
+                // Check if error is due to email verification
+                if (errorData?.requiresVerification || message.includes("verify your email")) {
+                    setVerificationError({
+                        message,
+                        requiresVerification: true
+                    });
+                } else {
+                    toast.error(message, {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        theme: "colored",
+                    });
+                }
             } else {
                 // Handle unexpected errors
                 toast.error("An unexpected error occurred", {
@@ -91,6 +102,24 @@ export default function SignIn() {
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
+    };
+
+    const handleResendVerification = async () => {
+        setResendingVerification(true);
+        try {
+            const response = await api.post("/api/v1/auth/resend-verification", {
+                email: userInfo.email,
+            });
+            toast.success(response.data.message || "Verification email sent!");
+            setVerificationError(null);
+        } catch (error: any) {
+            console.error("Resend verification error:", error);
+            toast.error(
+                error.response?.data?.message || "Failed to resend verification email",
+            );
+        } finally {
+            setResendingVerification(false);
+        }
     };
 
     const handleForgotPassword = async (e: React.FormEvent) => {
@@ -217,6 +246,45 @@ export default function SignIn() {
                             </div>
                         </div>
 
+                        {/* Email Verification Error */}
+                        {verificationError && verificationError.requiresVerification && (
+                            <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg space-y-3">
+                                <div className="flex items-start space-x-3">
+                                    <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+                                    <div className="flex-1">
+                                        <h4 className="text-sm font-semibold text-yellow-800 dark:text-yellow-200">
+                                            Email Verification Required
+                                        </h4>
+                                        <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                                            {verificationError.message}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex space-x-3">
+                                    <button
+                                        onClick={handleResendVerification}
+                                        disabled={resendingVerification || !userInfo.email}
+                                        className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-yellow-400 text-white text-sm font-medium rounded-md transition-colors duration-200 flex items-center gap-2"
+                                    >
+                                        {resendingVerification ? (
+                                            <>
+                                                <Loader />
+                                                Sending...
+                                            </>
+                                        ) : (
+                                            "Resend Verification Email"
+                                        )}
+                                    </button>
+                                    <button
+                                        onClick={() => setVerificationError(null)}
+                                        className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md transition-colors duration-200"
+                                    >
+                                        Dismiss
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Forgot Password */}
                         <div className="flex justify-end">
                             <button
@@ -245,6 +313,7 @@ export default function SignIn() {
                             )}
                         </button>
                     </form>
+
                     <div className="flex items-center justify-center gap-4 text-sm text-gray-400 mt-4">
                         <div className="h-px bg-gray-300 flex-1" />
                         <span>or continue with</span>
