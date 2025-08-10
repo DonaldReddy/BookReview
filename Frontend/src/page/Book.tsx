@@ -92,7 +92,7 @@ export default function BookPage() {
                                     </span>
                                 </p>
                                 <div className="flex items-center gap-2 my-2">
-                                    {Array(book.rating)
+                                    {Array(Math.min(Math.max(Math.round(book.rating), 0), 5))
                                         .fill(null)
                                         .map((_, index) => (
                                             <span
@@ -102,7 +102,7 @@ export default function BookPage() {
                                                 <FaStar />
                                             </span>
                                         ))}
-                                    {Array(5 - book.rating)
+                                    {Array(Math.max(5 - Math.round(book.rating), 0))
                                         .fill(null)
                                         .map((_, index) => (
                                             <span
@@ -116,6 +116,12 @@ export default function BookPage() {
                                         {" "}
                                         {book.ratingCount}
                                     </p>
+                                    {book.rating !== null && book.rating !== undefined && (book.rating < 0 || book.rating > 5) && (
+                                        <span className="text-red-500">Invalid rating: {book.rating}</span>
+                                    )}
+                                    {book.rating !== null && book.rating !== undefined && (book.rating < 0 || book.rating > 5) && (
+                                        <span className="text-red-500">Invalid rating: {book.rating}</span>
+                                    )}
                                 </div>
                             </div>
                             <p className="text-lg">{book.description}</p>
@@ -144,7 +150,7 @@ export default function BookPage() {
             {!isReviewLoading ? (
                 <div className="  grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {reviews.map((review) => (
-                        <div className="p-4 border rounded-lg shadow-md flex  gap-4  bg-blue-100">
+                        <div key={review.id} className="p-4 border rounded-lg shadow-md flex  gap-4  bg-blue-100">
                             <img
                                 src={`https://api.dicebear.com/9.x/personas/svg?seed=${review.userId}`}
                                 className="w-12 h-12 rounded-full border-black border"

@@ -47,7 +47,7 @@
 | React.js         | Frontend UI                 |
 | Tailwind CSS     | Styling & layout            |
 | Node.js & Express| Backend APIs                |
-| MongoDB          | Database                    |
+| PostgresSql      | Database                    |
 | JWT              | Authentication              |
 | OpenRouter      | AI-generated review content |
 | Render           | Deployment platform         |

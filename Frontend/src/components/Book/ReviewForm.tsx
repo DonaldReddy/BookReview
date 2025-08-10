@@ -40,13 +40,42 @@ export default function ReviewForm({
         try {
             setIsLoading(true);
 
-            await api.post(`/api/v1/reviews?bookId=${book.id}`, {
-                rating: reviewInfo.rating,
+            // Validate rating
+            const rating = Math.round(reviewInfo.rating);
+            if (rating < 1 || rating > 5) {
+                throw new Error('Rating must be between 1 and 5');
+            }
+
+            // Validate comment
+            if (!reviewInfo.comment) {
+                throw new Error('Comment is required');
+            }
+
+            const response = await api.post(`/api/v1/reviews?bookId=${book.id}`, {
+
                 comment: reviewInfo.comment,
+                rating: rating
             });
+
+            if (!response.data) {
+                throw new Error('Invalid response from server');
+            }
+
             handleClose();
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Error submitting review:", error);
+
+            let errorMessage = 'Failed to submit review';
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            } else if (error && typeof error === 'object' && 'response' in error) {
+                const response = (error as { response?: { data?: { message?: string } } }).response;
+                if (response?.data?.message) {
+                    errorMessage = response.data.message;
+                }
+            }
+
+            alert(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -81,7 +110,7 @@ export default function ReviewForm({
                     required
                 ></textarea>
                 <div className="flex items-center gap-2 my-2">
-                    {Array(reviewInfo.rating)
+                    {Array(Math.min(Math.max(Math.round(reviewInfo.rating), 1), 5))
                         .fill(null)
                         .map((_, index) => (
                             <span
@@ -124,7 +153,7 @@ export default function ReviewForm({
                                     }
                                     size={
                                         reviewInfo.rating ==
-                                        index + 1 + reviewInfo.rating
+                                            index + 1 + reviewInfo.rating
                                             ? 25
                                             : 20
                                     }
@@ -136,10 +165,10 @@ export default function ReviewForm({
                         {reviewInfo.rating <= 2
                             ? "😶"
                             : reviewInfo.rating <= 3
-                              ? "😐"
-                              : reviewInfo.rating <= 4
-                                ? "😊"
-                                : "🤩"}
+                                ? "😐"
+                                : reviewInfo.rating <= 4
+                                    ? "😊"
+                                    : "🤩"}
                     </p>
                 </div>
                 <div className="flex flex-wrap gap-3 justify-end mt-4">

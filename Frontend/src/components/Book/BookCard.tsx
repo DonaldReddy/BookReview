@@ -19,6 +19,19 @@ export default function BookCard({
     createdAt,
     featured,
 }: Book) {
+    console.log('BookCard props:', {
+        id,
+        title,
+        author,
+        coverImage,
+        description,
+        rating,
+        ratingCount,
+        createdAt,
+        featured
+    });
+    console.log('Rating type:', typeof rating);
+    console.log('Rating value:', rating);
     const router = useNavigate();
     const [showEdit, setShowEdit] = useState(false);
     const [showDeleteWarning, setShowDeleteWarning] = useState(false);
@@ -61,12 +74,12 @@ export default function BookCard({
                     {author}
                 </span>
             </p>
-            <div className="flex items-center gap-2 ">
+            <div className="flex items-center gap-2">
                 <div
                     title={`Rated ${rating} out of 5`}
                     className="flex items-center gap-1"
                 >
-                    {Array(rating)
+                    {Array(Math.min(Math.max(Math.round(rating), 0), 5))
                         .fill(null)
                         .map((_, index) => (
                             <span
@@ -76,7 +89,7 @@ export default function BookCard({
                                 <FaStar />
                             </span>
                         ))}
-                    {Array(5 - rating)
+                    {Array(Math.max(5 - Math.round(rating), 0))
                         .fill(null)
                         .map((_, index) => (
                             <span
@@ -86,6 +99,9 @@ export default function BookCard({
                                 <FaStar />
                             </span>
                         ))}
+                    {rating !== null && rating !== undefined && (rating < 0 || rating > 5) && (
+                        <span className="text-red-500">Invalid rating: {rating}</span>
+                    )}
                 </div>
                 <div className="w-full flex items-center justify-between gap-1">
                     <p className="text-sm text-gray-500 dark:text-gray-400">
