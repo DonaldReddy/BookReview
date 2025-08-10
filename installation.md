@@ -108,7 +108,7 @@ Backend API will typically run at : http://localhost:9999/api
 1. Create a PostgreSQL database for the project (can use pgAdmin or [neon db](https://neon.com/)).
 2. Update the `DATABASE_URL` in the `.env` file with your database connection string.
 3. Run the following command to create the database schema:
-
+4. Change the role in the 'tables' of the database to 'ADMIN' to add books
 ```bash
 npx prisma generate
 ```
@@ -122,3 +122,10 @@ npx prisma migrate dev --name migration_name
 ```
 
 This will apply the latest schema changes to your database.
+
+## for setting AI key
+1. Go to mistral.ai
+2. Sign up for an account
+3. Get your API key
+4. Update the `AI_KEY` in the `.env` file with your API key
+5. The model used here is `mistral-small`
