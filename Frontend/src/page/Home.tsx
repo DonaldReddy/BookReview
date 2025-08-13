@@ -6,17 +6,29 @@ export default function Home() {
     return (
         <div className="w-full min-h-dvh">
             <div className="h-[60dvh] md:h-[80dvh] flex flex-col items-center justify-center from-violet-200 to-yellow-100/60 rounded-2xl bg-[url('/main-bg.webp')] bg-cover bg-center bg-no-repeat">
-                <div className="flex items-center justify-center gap-3   ">
-                    <h1 className="text-4xl md:text-6xl bg-gradient-to-r bg-clip-text text-transparent text-white ">
+                <div className="flex items-center justify-center gap-3">
+                    {/* Main Heading - Indigo */}
+                    <h1
+                        className="text-4xl md:text-6xl font-bold"
+                        style={{ color: "#4B0082" }}
+                    >
                         Book Review Taken to Next level with AI
                     </h1>
                     <Sparkles className="text-4xl md:text-6xl text-blue-800 animate-pulse" />
                 </div>
                 <div className="flex flex-col items-center justify-center mt-4 space-y-2">
-                    <p className="text-lg text-center md:text-left text-white ">
+                    {/* Subheading - Royal Purple */}
+                    <p
+                        className="text-lg text-center md:text-left"
+                        style={{ color: "#6A0DAD" }}
+                    >
                         Explore the latest reviews and insights powered by AI.
                     </p>
-                    <p className="text-md text-center md:text-left text-white ">
+                    {/* Tagline - Medium Purple */}
+                    <p
+                        className="text-md text-center md:text-left font-medium"
+                        style={{ color: "#9370DB" }}
+                    >
                         Join us in discovering your next favorite book!
                     </p>
                 </div>
