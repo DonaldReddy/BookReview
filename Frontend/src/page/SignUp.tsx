@@ -33,11 +33,9 @@ export default function SignUp() {
     const [loading, setLoading] = React.useState(false);
     const [showPassword, setShowPassword] = React.useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-    const [showVerificationPrompt, setShowVerificationPrompt] =
-        React.useState(false);
+    const [showVerificationPrompt, setShowVerificationPrompt] = React.useState(false);
     const [verificationMessage, setVerificationMessage] = React.useState("");
-    const [resendingVerification, setResendingVerification] =
-        React.useState(false);
+    const [resendingVerification, setResendingVerification] = React.useState(false);
 
     const router = useNavigate();
     const dispatch = useAppDispatch();
@@ -48,10 +46,44 @@ export default function SignUp() {
         }
     }, [isAuthenticated, user, router]);
 
+    const validateStrongPassword = (password: string) => {
+        const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return passwordRegex.test(password);
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setUserInfo((prev) => ({ ...prev, [name]: value }));
-        if (error[name as keyof ErrorState]) {
+
+        if (name === "password") {
+            if (!validateStrongPassword(value)) {
+                setError((prev) => ({
+                    ...prev,
+                    password: "Password must be at least 8 characters.",
+                }));
+            } else {
+                setError((prev) => ({ ...prev, password: "" }));
+            }
+        }
+
+        if (name === "confirmPassword") {
+            if (value.length < 8) {
+                setError((prev) => ({
+                    ...prev,
+                    confirmPassword: "Confirm Password must be at least 8 characters.",
+                }));
+            } else if (value !== userInfo.password) {
+                setError((prev) => ({
+                    ...prev,
+                    confirmPassword: "Passwords do not match",
+                }));
+            } else {
+                setError((prev) => ({ ...prev, confirmPassword: "" }));
+            }
+        }
+
+        if (error[name as keyof ErrorState] && name !== "password" && name !== "confirmPassword") {
             setError((prevError) => ({ ...prevError, [name]: "" }));
         }
     };
@@ -65,20 +97,18 @@ export default function SignUp() {
         };
 
         if (!userInfo.name) currentError.name = "Please enter your full name";
-        if (!userInfo.email)
-            currentError.email = "Please enter your email address";
+        if (!userInfo.email) currentError.email = "Please enter your email address";
+
         if (!userInfo.password) {
             currentError.password = "Please create a password";
-        } else if (
-            !/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+={}\[\]:;"'<>,.?~`-]{8,}$/.test(
-                userInfo.password
-            )
-        ) {
-            currentError.password =
-                "Password must be at least 8 characters with at least one letter and one number.";
+        } else if (!validateStrongPassword(userInfo.password)) {
+            currentError.password = "Password must be at least 8 characters.";
         }
+
         if (!userInfo.confirmPassword) {
             currentError.confirmPassword = "Please confirm your password";
+        } else if (userInfo.confirmPassword.length < 8) {
+            currentError.confirmPassword = "Confirm Password must be at least 8 characters.";
         } else if (userInfo.password !== userInfo.confirmPassword) {
             currentError.confirmPassword = "Passwords do not match";
         }
@@ -94,19 +124,13 @@ export default function SignUp() {
     const handleResendVerification = async () => {
         setResendingVerification(true);
         try {
-            const response = await api.post(
-                "/api/v1/auth/resend-verification",
-                {
-                    email: userInfo.email,
-                }
-            );
+            const response = await api.post("/api/v1/auth/resend-verification", {
+                email: userInfo.email,
+            });
             toast.success(response.data.message || "Verification email sent!");
         } catch (error: any) {
             console.error("Resend verification error:", error);
-            toast.error(
-                error.response?.data?.message ||
-                    "Failed to resend verification email"
-            );
+            toast.error(error.response?.data?.message || "Failed to resend verification email");
         } finally {
             setResendingVerification(false);
         }
@@ -123,16 +147,11 @@ export default function SignUp() {
                 password: userInfo.password,
             });
 
-            // Check if email verification is required
             if (response.data.requiresVerification) {
-                // Email verification flow - don't auto-login
                 setVerificationMessage(response.data.message);
                 setShowVerificationPrompt(true);
-                toast.success(
-                    "Account created! Please check your email to verify your account."
-                );
+                toast.success("Account created! Please check your email to verify your account.");
             } else {
-                // Original flow - auto-login if verification not required
                 dispatch(authActions.login(response.data.user));
                 router("/");
             }
@@ -150,332 +169,138 @@ export default function SignUp() {
                     : "Something went wrong. Please try again.",
                 confirmPassword: "",
             });
-            toast.error(
-                error.response?.data?.message ||
-                    "Sign up failed. Please try again."
-            );
+            toast.error(error.response?.data?.message || "Sign up failed. Please try again.");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8">
-            <div className="w-full max-w-md">
-                <div className="bg-white dark:bg-slate-800 shadow-2xl rounded-2xl p-8 space-y-8">
-                    {showVerificationPrompt ? (
-                        /* Verification Prompt */
-                        <div className="text-center space-y-6">
-                            <div className="flex justify-center">
-                                <CheckCircle className="h-16 w-16 text-green-500" />
-                            </div>
-                            <div className="space-y-2">
-                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                                    Check Your Email!
-                                </h1>
-                                <p className="text-gray-600 dark:text-gray-300">
-                                    {verificationMessage}
-                                </p>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    We've sent a verification link to{" "}
-                                    <strong>{userInfo.email}</strong>
-                                </p>
-                            </div>
-
-                            <div className="space-y-4">
-                                <button
-                                    onClick={handleResendVerification}
-                                    disabled={resendingVerification}
-                                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
-                                >
-                                    {resendingVerification ? (
-                                        <>
-                                            <Loader />
-                                            Sending...
-                                        </>
-                                    ) : (
-                                        "Resend Verification Email"
-                                    )}
-                                </button>
-
-                                <Link
-                                    to="/sign-in"
-                                    className="block w-full text-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
-                                >
-                                    Go to Sign In
-                                </Link>
-                            </div>
-
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                Didn't receive the email? Check your spam folder
-                                or click resend.
-                            </p>
+        <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+            <div className="w-full max-w-md p-8 space-y-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
+                <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
+                    Create your account
+                </h2>
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                    <div>
+                        <label className="block mb-1 font-medium text-gray-900 dark:text-gray-200">
+                            Full Name
+                        </label>
+                        <div className="flex items-center border rounded-lg px-3 dark:border-gray-600">
+                            <User className="text-gray-400 dark:text-gray-300" />
+                            <input
+                                type="text"
+                                name="name"
+                                value={userInfo.name}
+                                onChange={handleInputChange}
+                                className="flex-1 p-2 outline-none bg-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                                placeholder="Enter your full name"
+                            />
                         </div>
-                    ) : (
-                        <>
-                            {/* Header */}
-                            <div className="text-center space-y-2">
-                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                                    Create Account
-                                </h1>
-                                <p className="text-gray-600 dark:text-gray-300">
-                                    Join us and get started today
-                                </p>
-                            </div>
+                        {error.name && <p className="text-sm text-red-500">{error.name}</p>}
+                    </div>
 
-                            {/* Form */}
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                {/* Name Field */}
-                                <div className="space-y-2">
-                                    <label
-                                        htmlFor="name"
-                                        className="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-                                    >
-                                        Full Name
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <User className="h-5 w-5 text-gray-400 dark:text-gray-300" />
-                                        </div>
-                                        <input
-                                            id="name"
-                                            type="text"
-                                            placeholder="Enter your full name"
-                                            name="name"
-                                            className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
-                                            value={userInfo.name}
-                                            onChange={handleInputChange}
-                                            required
-                                            disabled={loading}
-                                        />
-                                    </div>
-                                    {error.name && (
-                                        <p className="text-red-500 dark:text-red-400 text-sm font-medium flex items-center gap-1">
-                                            {error.name}
-                                        </p>
-                                    )}
-                                </div>
+                    <div>
+                        <label className="block mb-1 font-medium text-gray-900 dark:text-gray-200">
+                            Email
+                        </label>
+                        <div className="flex items-center border rounded-lg px-3 dark:border-gray-600">
+                            <Mail className="text-gray-400 dark:text-gray-300" />
+                            <input
+                                type="email"
+                                name="email"
+                                value={userInfo.email}
+                                onChange={handleInputChange}
+                                className="flex-1 p-2 outline-none bg-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                                placeholder="Enter your email"
+                            />
+                        </div>
+                        {error.email && <p className="text-sm text-red-500">{error.email}</p>}
+                    </div>
 
-                                {/* Email Field */}
-                                <div className="space-y-2">
-                                    <label
-                                        htmlFor="email"
-                                        className="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-                                    >
-                                        Email Address
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <Mail className="h-5 w-5 text-gray-400 dark:text-gray-300" />
-                                        </div>
-                                        <input
-                                            id="email"
-                                            type="email"
-                                            placeholder="Enter your email"
-                                            name="email"
-                                            className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
-                                            value={userInfo.email}
-                                            onChange={handleInputChange}
-                                            required
-                                            disabled={loading}
-                                        />
-                                    </div>
-                                    {error.email && (
-                                        <p className="text-red-500 dark:text-red-400 text-sm font-medium flex items-center gap-1">
-                                            {error.email}
-                                        </p>
-                                    )}
-                                </div>
+                    <div>
+                        <label className="block mb-1 font-medium text-gray-900 dark:text-gray-200">
+                            Password
+                        </label>
+                        <div className="flex items-center border rounded-lg px-3 dark:border-gray-600">
+                            <Lock className="text-gray-400 dark:text-gray-300" />
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                name="password"
+                                value={userInfo.password}
+                                onChange={handleInputChange}
+                                className="flex-1 p-2 outline-none bg-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                                placeholder="Create a strong password"
+                            />
+                            <button
+                                type="button"
+                                onClick={togglePasswordVisibility}
+                                className="focus:outline-none"
+                            >
+                                {showPassword ? <EyeOff /> : <Eye />}
+                            </button>
+                        </div>
+                        {error.password && <p className="text-sm text-red-500">{error.password}</p>}
+                    </div>
 
-                                {/* Password Field */}
-                                <div className="space-y-2">
-                                    <label
-                                        htmlFor="password"
-                                        className="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-                                    >
-                                        Password
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <Lock className="h-5 w-5 text-gray-400 dark:text-gray-300" />
-                                        </div>
-                                        <input
-                                            id="password"
-                                            type={
-                                                showPassword
-                                                    ? "text"
-                                                    : "password"
-                                            }
-                                            placeholder="Create a strong password"
-                                            name="password"
-                                            className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 bg-gray-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
-                                            value={userInfo.password}
-                                            onChange={handleInputChange}
-                                            required
-                                            disabled={loading}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={togglePasswordVisibility}
-                                            disabled={loading}
-                                            className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 dark:hover:bg-gray-300 rounded-r-lg transition-colors duration-200 min-w-[44px] min-h-[44px] justify-center disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                                            aria-label={
-                                                showPassword
-                                                    ? "Hide password"
-                                                    : "Show password"
-                                            }
-                                        >
-                                            {showPassword ? (
-                                                <EyeOff className="h-5 w-5 text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 " />
-                                            ) : (
-                                                <Eye className="h-5 w-5 text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400" />
-                                            )}
-                                        </button>
-                                    </div>
-                                    {error.password && (
-                                        <p className="text-red-500 dark:text-red-400 text-sm font-medium flex items-center gap-1">
-                                            {error.password}
-                                        </p>
-                                    )}
-                                </div>
+                    <div>
+                        <label className="block mb-1 font-medium text-gray-900 dark:text-gray-200">
+                            Confirm Password
+                        </label>
+                        <div className="flex items-center border rounded-lg px-3 dark:border-gray-600">
+                            <Lock className="text-gray-400 dark:text-gray-300" />
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                name="confirmPassword"
+                                value={userInfo.confirmPassword}
+                                onChange={handleInputChange}
+                                className="flex-1 p-2 outline-none bg-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                                placeholder="Re-enter your password"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                className="focus:outline-none"
+                            >
+                                {showConfirmPassword ? <EyeOff /> : <Eye />}
+                            </button>
+                        </div>
+                        {error.confirmPassword && (
+                            <p className="text-sm text-red-500">{error.confirmPassword}</p>
+                        )}
+                    </div>
 
-                                <div className="space-y-2">
-                                    <label
-                                        htmlFor="confirmPassword"
-                                        className="block text-sm font-semibold text-gray-700"
-                                    >
-                                        Confirm Password
-                                    </label>
-                                    <div className="relative">
-                                        <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <Lock className="h-5 w-5 text-gray-400" />
-                                        </span>
-                                        <input
-                                            id="confirmPassword"
-                                            type={
-                                                showConfirmPassword
-                                                    ? "text"
-                                                    : "password"
-                                            }
-                                            name="confirmPassword"
-                                            value={userInfo.confirmPassword}
-                                            onChange={handleInputChange}
-                                            placeholder="Re-enter your password"
-                                            className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 focus:ring-4 focus:ring-violet-500 focus:border-violet-500 focus:ring-offset-1"
-                                            disabled={loading}
-                                            required
-                                        />
-                                        <button
-                                            type="button"
-                                            className="absolute right-3 inset-y-0 flex items-center"
-                                            onClick={() =>
-                                                setShowConfirmPassword(
-                                                    !showConfirmPassword
-                                                )
-                                            }
-                                            disabled={loading}
-                                        >
-                                            {showConfirmPassword ? (
-                                                <EyeOff className="w-5 h-5 text-gray-400" />
-                                            ) : (
-                                                <Eye className="w-5 h-5 text-gray-400" />
-                                            )}
-                                        </button>
-                                    </div>
-                                    {error.confirmPassword && (
-                                        <p className="text-sm text-red-500">
-                                            {error.confirmPassword}
-                                        </p>
-                                    )}
-                                </div>
+                    <button
+                        type="submit"
+                        className="w-full py-2 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                        disabled={loading}
+                    >
+                        {loading ? <Loader /> : "Create Account"}
+                    </button>
+                </form>
 
-                                <div className="relative group">
-                                    <button
-                                        type="submit"
-                                        disabled={loading}
-                                        className="w-full bg-blue-500 hover:bg-blue-600/70 text-gray-100 font-semibold py-3 px-4 rounded-lg transition duration-300 shadow-lg flex justify-center items-center gap-2"
-                                    >
-                                        {loading ? (
-                                            <>
-                                                <Loader size={20} />
-                                                <span>Creating Account...</span>
-                                            </>
-                                        ) : (
-                                            "Create Account"
-                                        )}
-                                    </button>
-                                    <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 w-64 bg-blue-100 text-blue-800 text-sm rounded-md shadow-md opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition-all duration-300 px-3 py-2 pointer-events-none group-hover:pointer-events-auto z-10">
-                                        Please double-check your inputs before
-                                        creating the account.
-                                    </div>
-                                </div>
-                            </form>
-
-                            {/* Divider */}
-                            <div className="flex items-center justify-center gap-4 text-sm text-gray-400 mt-4">
-                                <div className="h-px bg-gray-300 flex-1" />
-                                <span>or continue with</span>
-                                <div className="h-px bg-gray-300 flex-1" />
-                            </div>
-
-                            {/* Google Sign Up/Login */}
-                            <div className="flex items-center justify-center mt-4">
-                                <GoogleLogin
-                                    onSuccess={async (credentialResponse) => {
-                                        try {
-                                            const res = await api.post(
-                                                "/api/v1/auth/google-auth",
-                                                {
-                                                    token: credentialResponse.credential,
-                                                }
-                                            );
-
-                                            dispatch(
-                                                authActions.login(res.data.user)
-                                            );
-                                            if (
-                                                res.data.user.role === "ADMIN"
-                                            ) {
-                                                router("/admin");
-                                            } else {
-                                                router("/");
-                                            }
-                                        } catch (err) {
-                                            console.error(
-                                                "Google SignUp error",
-                                                err
-                                            );
-                                        }
-                                    }}
-                                    onError={() => {
-                                        toast.error("Google Login Failed", {
-                                            position: "top-right",
-                                            autoClose: 3000,
-                                            hideProgressBar: false,
-                                            closeOnClick: true,
-                                            pauseOnHover: true,
-                                            draggable: true,
-                                            theme: "colored",
-                                        });
-                                    }}
-                                />
-                            </div>
-
-                            {/* Footer */}
-                            <div className="text-center pt-4 border-t border-gray-100 dark:border-gray-600">
-                                <p className=" text-gray-600 dark:text-gray-100">
-                                    Already have an account?{" "}
-                                    <Link
-                                        to="/sign-in"
-                                        className="font-semibold text-blue-600 dark:text-blue-500 hover:text-blue-800 dark:hover:text-blue-400 transition-colors duration-200"
-                                    >
-                                        Sign In
-                                    </Link>
-                                </p>
-                            </div>
-                        </>
-                    )}
+                <div className="text-center">
+                    <p className="text-gray-900 dark:text-gray-300">
+                        Already have an account?{" "}
+                        <Link to="/login" className="text-indigo-600 hover:underline">
+                            Log in
+                        </Link>
+                    </p>
                 </div>
+
+                {showVerificationPrompt && (
+                    <div className="p-4 border rounded-lg mt-4 dark:border-gray-600">
+                        <CheckCircle className="text-green-500 inline mr-2" />
+                        <span className="text-gray-900 dark:text-gray-300">{verificationMessage}</span>
+                        <button
+                            onClick={handleResendVerification}
+                            className="ml-4 text-indigo-600 hover:underline"
+                            disabled={resendingVerification}
+                        >
+                            {resendingVerification ? "Resending..." : "Resend Email"}
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
