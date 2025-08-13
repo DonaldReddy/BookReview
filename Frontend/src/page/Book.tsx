@@ -30,6 +30,7 @@ export default function BookPage() {
     const router = useNavigate();
     const [showReviewForm, setShowReviewForm] = React.useState(false);
 
+    // Added bookId and router to dependency array
     React.useEffect(() => {
         if (bookId) {
             const fetchBook = async () => {
@@ -47,15 +48,13 @@ export default function BookPage() {
         } else {
             router("/app/books");
         }
-    }, []);
+    }, [bookId, router]);
 
     React.useEffect(() => {
         const fetchReviews = async () => {
             try {
                 setIsReviewLoading(true);
-                const { data } = await api.get(
-                    `/api/v1/reviews?bookId=${bookId}`
-                );
+                const { data } = await api.get(`/api/v1/reviews?bookId=${bookId}`);
                 setReviews(data);
             } catch (error) {
                 console.error("Failed to fetch reviews:", error);
@@ -82,9 +81,7 @@ export default function BookPage() {
                         )}
                         <div className="flex flex-col gap-2 md:w-3/4">
                             <div>
-                                <h1 className="text-2xl md:text-4xl ">
-                                    {book.title}
-                                </h1>
+                                <h1 className="text-2xl md:text-4xl ">{book.title}</h1>
                                 <p className="text-sm my-2 ">
                                     by:{" "}
                                     <span className="underline underline-offset-4 text-blue-950">
@@ -95,36 +92,24 @@ export default function BookPage() {
                                     {Array(book.rating)
                                         .fill(null)
                                         .map((_, index) => (
-                                            <span
-                                                key={index}
-                                                className="text-sm text-[#de7921]"
-                                            >
+                                            <span key={index} className="text-sm text-[#de7921]">
                                                 <FaStar />
                                             </span>
                                         ))}
                                     {Array(5 - book.rating)
                                         .fill(null)
                                         .map((_, index) => (
-                                            <span
-                                                key={index}
-                                                className="text-sm text-gray-500"
-                                            >
+                                            <span key={index} className="text-sm text-gray-500">
                                                 <FaStar />
                                             </span>
                                         ))}
-                                    <p className="text-lg">
-                                        {" "}
-                                        {book.ratingCount}
-                                    </p>
+                                    <p className="text-lg"> {book.ratingCount}</p>
                                 </div>
                             </div>
                             <p className="text-lg">{book.description}</p>
                             <div>
                                 <p className="text-sm">
-                                    Created At:{" "}
-                                    {new Date(
-                                        book.createdAt
-                                    ).toLocaleDateString()}
+                                    Created At: {new Date(book.createdAt).toLocaleDateString()}
                                 </p>
                             </div>
                         </div>
@@ -142,53 +127,41 @@ export default function BookPage() {
 
             <h2 className="text-2xl my-4">Reviews</h2>
             {!isReviewLoading ? (
-                <div className="  grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {reviews.map((review) => (
-                        <div className="p-4 border rounded-lg shadow-md flex  gap-4  bg-blue-100">
+                        <div
+                            key={review.id}
+                            className="p-4 border rounded-lg shadow-md flex gap-4 bg-blue-100"
+                        >
                             <img
                                 src={`https://api.dicebear.com/9.x/personas/svg?seed=${review.userId}`}
                                 className="w-12 h-12 rounded-full border-black border"
                             />
                             <div className="w-full">
-                                <p className="text-sm text-gray-500">
-                                    {review.user.name}
-                                </p>
+                                <p className="text-sm text-gray-500">{review.user.name}</p>
                                 <div className="flex items-center gap-2 ">
                                     {Array(review.rating)
                                         .fill(null)
                                         .map((_, index) => (
-                                            <span
-                                                key={index}
-                                                className="text-sm text-[#de7921]"
-                                            >
+                                            <span key={index} className="text-sm text-[#de7921]">
                                                 <FaStar />
                                             </span>
                                         ))}
                                     {Array(5 - review.rating)
                                         .fill(null)
                                         .map((_, index) => (
-                                            <span
-                                                key={index}
-                                                className="text-sm text-gray-500"
-                                            >
+                                            <span key={index} className="text-sm text-gray-500">
                                                 <FaStar />
                                             </span>
                                         ))}
                                     <p className="text-sm">
-                                        {new Date(
-                                            review.createdAt
-                                        ).toLocaleDateString()}
+                                        {new Date(review.createdAt).toLocaleDateString()}
                                     </p>
                                 </div>
                                 <div className="my-2">
                                     <p className="text-lg">
-                                        {review.comment
-                                            .split(" ")
-                                            .slice(0, 100)
-                                            .join(" ")}
-                                        {review.comment.split(" ").length > 100
-                                            ? "..."
-                                            : ""}
+                                        {review.comment.split(" ").slice(0, 100).join(" ")}
+                                        {review.comment.split(" ").length > 100 ? "..." : ""}
                                     </p>
                                 </div>
                             </div>
@@ -196,17 +169,14 @@ export default function BookPage() {
                     ))}
                 </div>
             ) : (
-                <div className=" flex items-center ">
+                <div className="flex items-center ">
                     <div className="w-3/4">
                         <ReviewSkeleton />
                     </div>
                 </div>
             )}
             {showReviewForm && (
-                <ReviewForm
-                    book={book}
-                    handleClose={() => setShowReviewForm(false)}
-                />
+                <ReviewForm book={book} handleClose={() => setShowReviewForm(false)} />
             )}
         </div>
     );

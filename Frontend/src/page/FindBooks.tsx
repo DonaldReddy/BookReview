@@ -16,16 +16,18 @@ export default function FindBooks() {
     const dispatch = useAppDispatch();
     const [page, setPage] = useState(searchParams.get("page") || 1);
 
+    // Added dispatch to dependency array
     useEffect(() => {
         const timeOut = setTimeout(() => {
             dispatch(userBookActions.fetchBooks());
         }, 500);
         return () => clearTimeout(timeOut);
-    }, [searchParams]);
+    }, [searchParams, dispatch]);
 
+    // Added setSearchParams to dependency array
     useEffect(() => {
         setSearchParams({ page: page.toString() });
-    }, [page]);
+    }, [page, setSearchParams]);
 
     return (
         <div className="min-h-dvh">

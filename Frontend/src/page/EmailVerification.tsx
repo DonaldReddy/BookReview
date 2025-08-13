@@ -28,8 +28,8 @@ const EmailVerificationPage: React.FC = () => {
             try {
                 console.log(
                     "Sending verification request with token:",
-                    token.substring(0, 16) + "..."
-                ); // Debug log
+                    token.substring(0, 16) + "..." // Debug log
+                );
                 const response = await api.post("/api/v1/auth/verify-email", {
                     token,
                 });
@@ -49,11 +49,16 @@ const EmailVerificationPage: React.FC = () => {
                     setStatus("error");
                     setMessage(response.data.message || "Verification failed");
                 }
-            } catch (error: any) {
-                console.error("Email verification error:", error);
-                console.error("Error response:", error.response?.data); // Debug log
+            } catch (err: unknown) {
+                console.error("Email verification error:", err);
 
-                const errorMessage = error.response?.data?.message;
+                // Narrow error type safely
+                const errorResponse =
+                    err && typeof err === "object" && "response" in err
+                        ? (err as { response?: { data?: { message?: string } } }).response
+                        : null;
+
+                const errorMessage = errorResponse?.data?.message;
 
                 // Handle specific error cases
                 if (errorMessage?.includes("already verified")) {

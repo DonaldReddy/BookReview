@@ -122,7 +122,7 @@ export default function SignIn() {
             );
             toast.success(response.data.message || "Verification email sent!");
             setVerificationError(null);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Resend verification error:", error);
             toast.error(
                 error.response?.data?.message ||
