@@ -19,8 +19,8 @@ export default function BookPage() {
       bookId: string;
       rating: number;
       comment: string;
-      createdAt: Date;
-      updatedAt: Date;
+      createdAt: string; // changed to string for safe parsing
+      updatedAt: string;
       user: {
         id: string;
         name: string;
@@ -65,6 +65,11 @@ export default function BookPage() {
     fetchReviews();
   }, [bookId]);
 
+  // Safe fallback values
+  const rating = book.rating ?? 0;
+  const ratingCount = book.ratingCount ?? 0;
+  const createdAtDate = book.createdAt ? new Date(book.createdAt) : null;
+
   return (
     <div className="min-h-[150dvh]">
       {!isBookLoading ? (
@@ -73,48 +78,47 @@ export default function BookPage() {
             {typeof book.coverImage === "string" && (
               <img
                 src={book.coverImage}
-                alt={book.title}
+                alt={book.title || "Book cover"}
                 className="w-full md:w-1/4"
               />
             )}
             <div className="flex flex-col gap-2 md:w-3/4">
               <div>
-                <h1 className="text-2xl md:text-4xl">{book.title}</h1>
+                <h1 className="text-2xl md:text-4xl">{book.title || "Untitled"}</h1>
                 <p className="text-sm my-2">
                   by:{" "}
                   <span className="underline underline-offset-4 text-blue-950">
-                    {book.author}
+                    {book.author || "Unknown Author"}
                   </span>
                 </p>
                 <div className="flex items-center gap-2 my-2">
-                  {Array(Math.min(Math.max(Math.round(book.rating), 0), 5))
+                  {Array(Math.min(Math.max(Math.round(rating), 0), 5))
                     .fill(null)
                     .map((_, index) => (
                       <span key={index} className="text-sm text-[#de7921]">
                         <FaStar />
                       </span>
                     ))}
-                  {Array(Math.max(5 - Math.round(book.rating), 0))
+                  {Array(Math.max(5 - Math.round(rating), 0))
                     .fill(null)
                     .map((_, index) => (
                       <span key={index} className="text-sm text-gray-500">
                         <FaStar />
                       </span>
                     ))}
-                  <p className="text-lg">{book.ratingCount}</p>
-                  {book.rating !== null &&
-                    book.rating !== undefined &&
-                    (book.rating < 0 || book.rating > 5) && (
-                      <span className="text-red-500">
-                        Invalid rating: {book.rating}
-                      </span>
-                    )}
+                  <p className="text-lg">{ratingCount}</p>
+                  {(rating < 0 || rating > 5) && (
+                    <span className="text-red-500">Invalid rating: {rating}</span>
+                  )}
                 </div>
               </div>
-              <p className="text-lg">{book.description}</p>
+              <p className="text-lg">{book.description || "No description available."}</p>
               <div>
                 <p className="text-sm">
-                  Created At: {new Date(book.createdAt).toLocaleDateString()}
+                  Created At:{" "}
+                  {createdAtDate
+                    ? createdAtDate.toLocaleDateString()
+                    : "Unknown"}
                 </p>
               </div>
             </div>
@@ -133,46 +137,58 @@ export default function BookPage() {
       <h2 className="text-2xl my-4">Reviews</h2>
       {!isReviewLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {reviews.map((review) => (
-            <div
-              key={review.id}
-              className="p-4 border rounded-lg shadow-md flex gap-4 bg-blue-100"
-            >
-              <img
-                src={`https://api.dicebear.com/9.x/personas/svg?seed=${review.userId}`}
-                className="w-12 h-12 rounded-full border-black border"
-                alt={review.user.name}
-              />
-              <div className="w-full">
-                <p className="text-sm text-gray-500">{review.user.name}</p>
-                <div className="flex items-center gap-2">
-                  {Array(review.rating)
-                    .fill(null)
-                    .map((_, index) => (
-                      <span key={index} className="text-sm text-[#de7921]">
-                        <FaStar />
-                      </span>
-                    ))}
-                  {Array(5 - review.rating)
-                    .fill(null)
-                    .map((_, index) => (
-                      <span key={index} className="text-sm text-gray-500">
-                        <FaStar />
-                      </span>
-                    ))}
-                  <p className="text-sm">
-                    {new Date(review.createdAt).toLocaleDateString()}
+          {reviews.map((review) => {
+            const reviewCreatedAt = review.createdAt
+              ? new Date(review.createdAt)
+              : null;
+            return (
+              <div
+                key={review.id}
+                className="p-4 border rounded-lg shadow-md flex gap-4 bg-blue-100"
+              >
+                <img
+                  src={`https://api.dicebear.com/9.x/personas/svg?seed=${review.userId}`}
+                  className="w-12 h-12 rounded-full border-black border"
+                  alt={review.user?.name || "User avatar"}
+                />
+                <div className="w-full">
+                  <p className="text-sm text-gray-500">
+                    {review.user?.name || "Anonymous"}
                   </p>
-                </div>
-                <div className="my-2">
-                  <p className="text-lg">
-                    {review.comment.split(" ").slice(0, 100).join(" ")}
-                    {review.comment.split(" ").length > 100 ? "..." : ""}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    {Array(Math.min(Math.max(review.rating, 0), 5))
+                      .fill(null)
+                      .map((_, index) => (
+                        <span key={index} className="text-sm text-[#de7921]">
+                          <FaStar />
+                        </span>
+                      ))}
+                    {Array(5 - Math.min(Math.max(review.rating, 0), 5))
+                      .fill(null)
+                      .map((_, index) => (
+                        <span key={index} className="text-sm text-gray-500">
+                          <FaStar />
+                        </span>
+                      ))}
+                    <p className="text-sm">
+                      {reviewCreatedAt
+                        ? reviewCreatedAt.toLocaleDateString()
+                        : "Unknown date"}
+                    </p>
+                  </div>
+                  <div className="my-2">
+                    <p className="text-lg">
+                      {review.comment
+                        .split(" ")
+                        .slice(0, 100)
+                        .join(" ")}
+                      {review.comment.split(" ").length > 100 ? "..." : ""}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <div className="flex items-center">
