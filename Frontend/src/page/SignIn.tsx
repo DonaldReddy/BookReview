@@ -126,7 +126,7 @@ export default function SignIn() {
             console.error("Resend verification error:", error);
             toast.error(
                 error.response?.data?.message ||
-                    "Failed to resend verification email"
+                "Failed to resend verification email"
             );
         } finally {
             setResendingVerification(false);
