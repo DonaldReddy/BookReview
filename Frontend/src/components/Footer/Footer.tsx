@@ -1,12 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import spark from "../../assets/spark.svg";
+// import spark from "../../assets/spark.svg"; // Removed because unused
 
 const Footer: React.FC = () => {
     return (
         <footer className="w-full px-4 sm:px-6 lg:px-8 py-12">
             <div className="rounded-2xl shadow-lg bg-gradient-to-b from-white to-blue-100 text-gray-800 p-12 md:p-16 transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1">
-
 
                 <div className="flex flex-col md:flex-row justify-between items-start gap-12">
                     {/* BookReview Info */}
@@ -14,12 +13,10 @@ const Footer: React.FC = () => {
                         <div className="flex items-center gap-3">
                             <span className="text-4xl text-blue-700 -mt-1">✦</span>
                             <h3 className="text-2xl font-bold tracking-wider">
-
                                 BookReview
                             </h3>
                         </div>
                         <p className="text-gray-600 text-sm">
-
                             Discover, review, and share your favorite books with
                             the community.
                         </p>
@@ -32,34 +29,19 @@ const Footer: React.FC = () => {
                                 title: "Explore",
                                 links: [
                                     { to: "/", label: "Home" },
-                                    {
-                                        to: "/app/books?page=1",
-                                        label: "Browse Books",
-                                    },
+                                    { to: "/app/books?page=1", label: "Browse Books" },
                                     { to: "/sign-in", label: "Login" },
                                     { to: "/about", label: "About Us" },
-                                    {
-                                        to: "/ai-suggestions",
-                                        label: "AI Suggestions",
-                                    },
+                                    { to: "/ai-suggestions", label: "AI Suggestions" },
                                 ],
                             },
                             {
                                 title: "Support",
                                 links: [
                                     { to: "/contact us", label: "Contact Us" },
-                                    {
-                                        to: "/privacy policy",
-                                        label: "Privacy Policy",
-                                    },
-                                    {
-                                        to: "/T&C",
-                                        label: "Terms & Conditions",
-                                    },
-                                    {
-                                        to: "/help center",
-                                        label: "Help Center",
-                                    },
+                                    { to: "/privacy policy", label: "Privacy Policy" },
+                                    { to: "/T&C", label: "Terms & Conditions" },
+                                    { to: "/help center", label: "Help Center" },
                                 ],
                             },
                         ].map((section) => (
@@ -76,7 +58,6 @@ const Footer: React.FC = () => {
                                             >
                                                 {link.label}
                                             </Link>
-
                                         </li>
                                     ))}
                                 </ul>
@@ -133,9 +114,7 @@ const Footer: React.FC = () => {
                 {/* Divider and Copyright */}
                 <hr className="my-8 border-t border-gray-300" />
                 <div className="text-center text-gray-500 text-sm">
-
-                    &copy; {new Date().getFullYear()}{" "}
-                    <strong>BookReview.in</strong> All rights reserved.
+                    &copy; {new Date().getFullYear()} <strong>BookReview.in</strong> All rights reserved.
                 </div>
             </div>
         </footer>

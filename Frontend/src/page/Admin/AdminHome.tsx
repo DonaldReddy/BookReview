@@ -26,11 +26,11 @@ export default function AdminHome() {
                 });
         }, 500);
         return () => clearTimeout(timeOut);
-    }, [searchParams]);
+    }, [searchParams, dispatch]); // Added dispatch to dependency array
 
     useEffect(() => {
         setSearchParams({ page: page.toString() });
-    }, [page]);
+    }, [page, setSearchParams]); // Added setSearchParams to dependency array
 
     return (
         <div className="min-h-dvh">

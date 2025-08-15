@@ -27,7 +27,8 @@ export default function Profile() {
             });
             dispatch(authActions.updateUser(response.data));
             toast.success("Profile updated successfully!");
-        } catch (error) {
+        } catch {
+            // No need to use the error variable
             toast.error("Failed to update profile. Please try again.");
         } finally {
             setLoading(false);

@@ -33,11 +33,12 @@ export default function BookFilter() {
         if (limit) params.set("limit", limit.toString());
         else params.delete("limit");
         setSearchParams(params);
-    }, [search, sortBy, filter, page, limit]);
+    }, [search, sortBy, filter, page, limit, setSearchParams]); // <-- added setSearchParams here
 
     return (
         <div className="hidden w-full md:flex items-center justify-between bg-white/80 dark:bg-gray-800 p-2 rounded-lg shadow-md text-black dark:text-white">
             <div className="flex items-center gap-2">
+                {/* Search input */}
                 <div className="flex items-center border-black/20 dark:border-white/20 border rounded-lg px-2">
                     <label className="text-lg font-semibold" htmlFor="search">
                         <IoIosSearch />
@@ -51,6 +52,8 @@ export default function BookFilter() {
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
+
+                {/* Sort */}
                 <div className="flex items-center border-black/20 dark:border-white/20 border rounded-lg px-2">
                     <label className="text-lg font-semibold" htmlFor="sortby">
                         <FaSort />
@@ -65,13 +68,14 @@ export default function BookFilter() {
                         <option value="" disabled>
                             Sort By
                         </option>
-
                         <option value="title">Title</option>
                         <option value="author">Author</option>
                         <option value="date">Date</option>
                         <option value="rating">Rating</option>
                     </select>
                 </div>
+
+                {/* Filter */}
                 <div className="flex items-center border-black/20 dark:border-white/20 border rounded-lg px-2">
                     <label className="text-lg font-semibold" htmlFor="filter">
                         <FaFilter />
@@ -86,18 +90,18 @@ export default function BookFilter() {
                         <option value="" disabled>
                             Filter
                         </option>
-
                         <option value="rating=4">rating &gt; 4</option>
                         <option value="rating=3">rating &gt; 3</option>
                         <option value="rating=2">rating &gt; 2</option>
                         <option value="rating=1">rating &gt; 1</option>
                     </select>
                 </div>
+
+                {/* Limit */}
                 <div className="flex items-center border-black/20 dark:border-white/20 border rounded-lg px-2">
                     <label className="text-sm " htmlFor="limit">
                         Items per page :
                     </label>
-
                     <input
                         type="number"
                         name="limit"
@@ -115,6 +119,8 @@ export default function BookFilter() {
                         }}
                     />
                 </div>
+
+                {/* Clear filters */}
                 <button
                     className="text-black dark:text-white py-2 px-3 rounded-xl flex items-center gap-2 hover:bg-black/100 dark:hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer border border-black/40"
                     onClick={() => {
@@ -128,6 +134,7 @@ export default function BookFilter() {
                     Clear all filters
                 </button>
             </div>
+
             <div>
                 {showAddNewBook && (
                     <AddNewBook
@@ -137,7 +144,7 @@ export default function BookFilter() {
                         }}
                     />
                 )}
-                {role == "ADMIN" && (
+                {role === "ADMIN" && (
                     <button
                         className=" text-black dark:text-white py-2 px-3 rounded-xl flex items-center gap-2 hover:bg-black/100 dark:hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer border border-black/40"
                         onClick={() => setShowAddNewBook(true)}
@@ -145,7 +152,7 @@ export default function BookFilter() {
                         Add new book <FaPlus />
                     </button>
                 )}
-                {role == "USER" && (
+                {role === "USER" && (
                     <button className=" text-black dark:text-white py-2 px-3 rounded-xl flex items-center gap-2 hover:bg-black/100 dark:hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer border border-black/40">
                         Saved books <FaBookmark />
                     </button>

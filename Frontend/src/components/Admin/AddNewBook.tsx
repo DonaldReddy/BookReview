@@ -54,15 +54,17 @@ export default function AddNewBook({
             );
 
             return data.secure_url;
-        } catch (error) {
+        } catch (err: unknown) {
+            // Optional: log error without changing website
+            console.error("Image upload error:", err);
             return null;
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
         try {
-            e.preventDefault();
-            setLoading(true);
             const coverImageUrl = await handleImageUpload();
             if (coverImageUrl) {
                 const bookData = {
@@ -71,7 +73,9 @@ export default function AddNewBook({
                 };
                 await api.post("/api/v1/books", bookData);
             }
-        } catch (error) {
+        } catch (err: unknown) {
+            // Optional: log error safely
+            console.error("Add book error:", err);
         } finally {
             handleClose();
             setLoading(false);

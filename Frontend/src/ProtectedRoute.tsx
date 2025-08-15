@@ -29,11 +29,12 @@ export default function ProtectedRoute({
                 }
             );
             toast.success(response.data.message || "Verification email sent!");
-        } catch (error: any) {
+        } catch (err: unknown) {
+            // Narrow type safely
+            const error = err as { response?: { data?: { message?: string } } };
             console.error("Resend verification error:", error);
             toast.error(
-                error.response?.data?.message ||
-                    "Failed to resend verification email"
+                error.response?.data?.message || "Failed to resend verification email"
             );
         } finally {
             setResendingVerification(false);

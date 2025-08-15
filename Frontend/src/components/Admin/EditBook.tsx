@@ -63,15 +63,16 @@ export default function EditBook({
 
             const data = await response.json();
             return data.secure_url;
-        } catch (error) {
+        } catch (err: unknown) {
+            console.error("Image upload error:", err);
             return null;
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
         try {
-            e.preventDefault();
-            setLoading(true);
             if (bookInfo.coverImage instanceof File) {
                 const imageUrl = await handleImageUpload();
                 if (imageUrl) {
@@ -99,7 +100,8 @@ export default function EditBook({
                     alert("Failed to update the book. Please try again.");
                 }
             }
-        } catch (error) {
+        } catch (err: unknown) {
+            console.error("Update book error:", err);
         } finally {
             setLoading(false);
             handleClose();
