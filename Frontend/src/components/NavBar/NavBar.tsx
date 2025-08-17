@@ -21,19 +21,28 @@ export default function NavBar() {
         dispatch(authActions.logout());
     };
 
-    const linkClass = (path: string) =>
+    const linkClass = (path) =>
         `px-3 py-1 rounded-md transition-all duration-200 transform hover:scale-110 ${
             location.pathname === path
                 ? "bg-blue-700/60 text-white font-semibold"
                 : "text-black/70 dark:text-gray-200 hover:bg-blue-200 dark:hover:bg-blue-200/20 hover:text-black dark:hover:text-gray-100"
         } ${clicked === path ? "text-lg font-bold scale-110" : ""}`;
 
+    // Function to handle clicking the logo, which scrolls to the top of the page.
+    const handleLogoClick = () => {
+        // Scroll to the top of the page with a smooth animation.
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        // Call the existing handleClick to update the visual state.
+        handleClick("/");
+    };
+
     const navLinks = [
-        { to: "app/books", label: "Browse Books" },
+        // FIX: Added a leading slash to create an absolute path to prevent "page not found" errors.
+        { to: "/app/books", label: "Browse Books" },
         { to: "/about", label: "About Us" },
     ];
 
-    const handleClick = (path: string) => {
+    const handleClick = (path) => {
         setClicked(path);
         setTimeout(() => setClicked(""), 300);
     };
@@ -47,6 +56,7 @@ export default function NavBar() {
                 <>
                     <Link
                         to="/"
+                        onClick={handleLogoClick} // Call the new scroll-to-top function here.
                         className="flex items-center gap-2 w-1/4 md:w-1/5"
                     >
                         <img src={logo} alt="logo" className="h-10 w-auto" />
