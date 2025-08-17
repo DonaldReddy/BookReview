@@ -21,6 +21,7 @@ import AboutUs from "./page/AboutUs";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { useAppSelector } from "./redux/store";
+import Privacy from "./page/Privacy";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -31,7 +32,7 @@ const router = createBrowserRouter(
             <Route path="verify-email" element={<EmailVerification />} />
             <Route path="reset-password" element={<ResetPassword />} />
             <Route path="about" element={<AboutUs />} />
-
+            <Route path="/privacy" element={<Privacy />} />
             <Route path="app" element={<ProtectedRoute access="USER" />}>
                 <Route path="books/:id" element={<Book />} />
                 <Route path="books" element={<FindBooks />} />
