@@ -73,13 +73,11 @@ const Footer: React.FC = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    to="/privacy policy"
-                                    className="hover:underline"
-                                >
-                                    Privacy policy
+                                <Link to="/privacy" className="hover:underline">
+                                    Privacy Policy
                                 </Link>
                             </li>
+
                             <li>
                                 <Link to="/T&C" className="hover:underline">
                                     Terms & conditions
